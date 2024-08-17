@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import japaLogo from "../assets/JAPALOGO.png";
 import { Eye, ArrowLeft } from "iconsax-react";
 import { useState } from "react";
-import { login_call } from "../api call/login";
+import { login_call } from "../api calls/login";
 const Login = () => {
   const [loginState, setLoginState] = useState(1);
   const [email, setEmail] = useState("");
@@ -20,11 +20,9 @@ const Login = () => {
     }
     return password;
   };
+
   const handle_login = () => {
-    const { data, isLoading, error } = useQuery({
-      queryKey: ["login"],
-      queryFn: login_call(email, password),
-    });
+    login_call(email, password);
   };
 
   const LoginOrReset = () => {
