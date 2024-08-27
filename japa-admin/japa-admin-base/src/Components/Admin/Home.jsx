@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 
-import { Strongbox, ArrowDown2, AddSquare, User, UserCirlceAdd, Setting2 } from "iconsax-react";
+import { Strongbox, ArrowDown2, AddSquare, User, UserCirlceAdd, Setting2, Bag2, Airdrop } from "iconsax-react";
 import { fetchStats, fetchUsers } from "../../api calls/api";
 import { People } from "iconsax-react";
 import Pagination from '@mui/material/Pagination';
@@ -65,16 +65,18 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5   border-purple-500 p-5 flex flex-row">
-                        <div className="h-20 w-20 bg-purple-400 rounded-full"></div>
+                        <div className="h-20 w-20 bg-purple-400 flex items-center justify-center rounded-full">
+                            <Airdrop size="50" color="#FFFFFF" />
+                        </div>
                         <div className="">
                             <h1 className="font-extrabold">Jobs</h1>
-                            <p className="font-extrabold text-5xl">2000</p>
+                            <p className="font-extrabold text-5xl">{stats?.jobs}</p>
                         </div>
                     </div>
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5   border-purple-500 p-5 flex flex-row">
                         <div className="h-20 w-20 bg-purple-400 rounded-full"></div>
                         <div className="">
-                            <h1 className="font-extrabold">Job applied for</h1>
+                            <h1 className="font-extrabold">"</h1>
                             <p className="font-extrabold text-5xl">2000</p>
                         </div>
                     </div>

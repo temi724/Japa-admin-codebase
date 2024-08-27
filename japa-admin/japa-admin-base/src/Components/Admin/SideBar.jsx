@@ -1,5 +1,6 @@
 import { useState } from "react";
 import japaLogo from "../../assets/JAPALOGO.png";
+import { NavLink } from "react-router-dom";
 import { Strongbox, ArrowDown2, AddSquare, User, UserCirlceAdd, Setting2 } from "iconsax-react";
 const SideBar = () => {
     const [jobmenu, setjobMenu] = useState(false)
@@ -8,7 +9,9 @@ const SideBar = () => {
         <>
             <div className="w-[300px] bg-white border-r-2 h-[100vh]">
                 <div className="p-5">
-                    <img src={japaLogo} className="h-[38px]" alt="" />
+                    <NavLink to={"/admin/home"}>
+                        <img src={japaLogo} className="h-[38px]" alt="" /></NavLink>
+
                     <div className="h-[0.9px] bg-gray-300 mt-5"></div>
 
                     {/* Menu */}
@@ -23,13 +26,13 @@ const SideBar = () => {
                             </div>
                             {jobmenu ? <div className="ml-2" >
 
-                                {[{ id: 1, value: "Post New Job", img: <AddSquare size="18" color="#FF8A65" /> },
-                                { id: 2, value: "jobs", img: <Strongbox size="18" color="#313033" variant="Bold" /> }]
+                                {[{ id: 1, value: "Post New Job", img: <AddSquare size="18" color="#FF8A65" />, goTo: "/admin/postjob" },
+                                { id: 2, value: "jobs", img: <Strongbox size="18" color="#313033" variant="Bold" />, goTo: "/admin/jobs" }]
                                     .map((x) => (
-                                        <div key={x.id} className="flex space-x-2 flex-row mt-6">
+                                        <NavLink to={x.goTo} key={x.id} className="flex space-x-2 flex-row mt-6">
                                             <Strongbox size="28" color="#313033" variant="Bold" />
                                             <p className="text-sm">{x.value}</p>
-                                        </div>
+                                        </NavLink>
                                     ))
                                 }
 

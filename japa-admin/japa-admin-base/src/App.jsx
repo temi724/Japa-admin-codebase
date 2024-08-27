@@ -6,6 +6,7 @@ import "./App.css";
 import Login from "./Components/Login";
 import Layout from "./Components/Layout";
 import Home from "./Components/Admin/Home";
+import PostJobs from "./Components/Admin/PostJobs";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/admin" element={<Layout />}>
           <Route path="" element={<Navigate to="home" />} />
           <Route path="home" element={<Home />}></Route>
+          <Route path="/admin/postjob" element={<PostJobs />} />
         </Route>
       </Routes>
     </>
