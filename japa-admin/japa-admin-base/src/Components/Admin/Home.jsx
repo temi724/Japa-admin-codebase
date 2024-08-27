@@ -1,31 +1,93 @@
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 
-const stats = () => {
-    return (
-        <>
-            <div className="">
+import { Strongbox, ArrowDown2, AddSquare, User, UserCirlceAdd, Setting2 } from "iconsax-react";
+import { fetchUsers } from "../../api calls/api";
 
-            </div>
-        </>
-    )
-}
-const PostJob = () => {
-    return (
+import { useState } from "react"
 
-        <div>
-            <h1 className="font-bold">Home of tours</h1>
-        </div>
 
-    )
 
-}
 
-const ReviewJob = () => { }
 
 const Home = () => {
+    const [search, setSearch] = useState("")
+    const [page, setPage] = useState("")
+    const [limit, setLimit] = useState("")
+
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['getUsers', { limit, page, search }],
+        queryFn: fetchUsers,
+        staleTime: 10000 * 60 * 60 * 24,
+        refetchOnWindowFocus: false
+    })
+    console.log(data)
+
+    // if (isLoading) {
+    //     return (
+    //         <div>
+    //             <p>Loading....</p>
+    //         </div>
+    //     )
+    // }
+
 
     return (
         <>
-            <div className="mx-5 mt-5 bg-white p-5">
+            <div className="mx-5 mt-5 bg-white p-2">
+                <div className="flex flex-row p-5 space-x-3 justify-center">
+                    <div className="h-40 rounded-md w-[400px] border-2 space-x-5  border-purple-500 p-5 flex flex-row">
+                        <div className="h-20 w-20 bg-purple-400 rounded-full"></div>
+                        <div className="">
+                            <h1 className="font-extrabold">Total users</h1>
+                            <p className="font-extrabold text-5xl">2000</p>
+                        </div>
+                    </div>
+                    <div className="h-40 rounded-md w-[400px] border-2 space-x-5   border-purple-500 p-5 flex flex-row">
+                        <div className="h-20 w-20 bg-purple-400 rounded-full"></div>
+                        <div className="">
+                            <h1 className="font-extrabold">Jobs</h1>
+                            <p className="font-extrabold text-5xl">2000</p>
+                        </div>
+                    </div>
+                    <div className="h-40 rounded-md w-[400px] border-2 space-x-5   border-purple-500 p-5 flex flex-row">
+                        <div className="h-20 w-20 bg-purple-400 rounded-full"></div>
+                        <div className="">
+                            <h1 className="font-extrabold">Job applied for</h1>
+                            <p className="font-extrabold text-5xl">2000</p>
+                        </div>
+                    </div>
+                </div>
+                {isLoading ? <div>Loading...</div> : ""}
+                {/* {data.users?.map((x) => (
+                    <p>Hello</p>
+                ))} */}
+                <div className="flex mx-5 p-5">
+                    <table className="table my-6  w-full  bg-white rounded-md text-sm text-left">
+                        <thead className="text-xs text-white uppercase bg-purple-300">
+                            <tr>
+                                <th scope="col" class="px-6 py-4">First Name</th>
+                                <th scope="col" class="px-6 py-4">Email</th>
+                                <th scope="col" class="px-6 py-4">Date Registered</th>
+                                <th scope="col" class="px-6 py-4">Phone</th>
+
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+
+                            {data?.users?.map((x) => (
+                                <tr className="font-light text-sm" key={x._id}>
+                                    <td className="px-5 py-4 ">{x.first_name}</td>
+                                    <td className="px-5 py-4">{x.email}</td>
+                                    <td className="px-5 py-4">{x.registration_date}</td>
+                                    <td className="px-5 py-4">{x.phone_number}</td>
+                                </tr>
+                            ))}
+
+                        </tbody>
+
+                    </table>
+                </div>
+
 
             </div>
         </>

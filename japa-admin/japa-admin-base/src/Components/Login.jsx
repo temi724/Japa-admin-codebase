@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import japaLogo from "../assets/JAPALOGO.png";
 import { Eye, ArrowLeft } from "iconsax-react";
 import { useEffect, useState } from "react";
-import { login_call } from "../api calls/login";
+
 import axios from "axios";
 const Login = () => {
   const [loginState, setLoginState] = useState(1);
@@ -10,39 +10,39 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [maskedPassword, setMaskedPassword] = useState("");
   const [isMasked, setIsMasked] = useState(true);
-  const [logged, setLogged] = useState("")
-
+  const [logged, setLogged] = useState("");
 
   useEffect(() => {
     if (logged === "yes") {
-      window.location.href = "/admin"
+      window.location.href = "/admin";
     }
-  }, [logged])
+  }, [logged]);
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
 
   const login_call = async (email, password) => {
-    console.log(email, password)
+    console.log(email, password);
     try {
       //extract to env..
-      const data = await axios.post("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/login", { email, password })
+      const data = await axios.post(
+        "https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/login",
+        { email, password }
+      );
       if (data.message !== "Invalid details") {
-        console.log(data.data.message)
-        sessionStorage.setItem("tokken", JSON.stringify(data.data.message))
-        sessionStorage.setItem("details", JSON.stringify(data.data.user_data))
-        setLogged("yes")
-        return data
+        console.log(data.data.message);
+        sessionStorage.setItem("tokken", JSON.stringify(data.data.message));
+        sessionStorage.setItem("details", JSON.stringify(data.data.user_data));
+        setLogged("yes");
+        return data;
       } else {
-        return ("wrong details")
+        return "wrong details";
       }
-
     } catch (ex) {
-      console.log(ex)
+      console.log(ex);
     }
-
-  }
+  };
 
   const showValue = () => {
     if (isMasked & (password.length > 0)) {
@@ -52,10 +52,9 @@ const Login = () => {
   };
 
   const handle_login = () => {
-    if (email !== "" & password !== "") {
+    if ((email !== "") & (password !== "")) {
       login_call(email, password);
     }
-
   };
 
   const LoginOrReset = () => {
