@@ -1,18 +1,36 @@
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 
 import { Strongbox, ArrowDown2, AddSquare, User, UserCirlceAdd, Setting2 } from "iconsax-react";
-import { fetchUsers } from "../../api calls/api";
-
+import { fetchStats, fetchUsers } from "../../api calls/api";
+import { People } from "iconsax-react";
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import TablePagination from '@mui/material/TablePagination';
 import { useState } from "react"
+import { Skeleton, Table, TableCell } from "@mui/material";
 
 
 
+const TableRowsLoader = ({ rowsNum }) => {
+    return [...Array(rowsNum)].map((row, index) => (
+        <table key={index}>
+            <tr >
+                <td className="px-5 w-52 py-4 ">   <Skeleton animation="wave" variant="text" /></td>
+                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
+                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
+                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
+                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
+            </tr>
 
+        </table>
+    ));
+};
 
 const Home = () => {
     const [search, setSearch] = useState("")
     const [page, setPage] = useState("")
     const [limit, setLimit] = useState("")
+    const [rowsperPage, setRowsPerPage] = useState(10)
 
     const { data, isLoading, error } = useQuery({
         queryKey: ['getUsers', { limit, page, search }],
@@ -20,15 +38,17 @@ const Home = () => {
         staleTime: 10000 * 60 * 60 * 24,
         refetchOnWindowFocus: false
     })
+
+    const { data: stats, isLoading: isLoadingStats, error: errorStats } = useQuery({
+        queryKey: ['stats'],
+        queryFn: fetchStats,
+        staleTime: Infinity,
+        refetchOnWindowFocus: false
+    })
     console.log(data)
 
-    // if (isLoading) {
-    //     return (
-    //         <div>
-    //             <p>Loading....</p>
-    //         </div>
-    //     )
-    // }
+
+
 
 
     return (
@@ -36,10 +56,12 @@ const Home = () => {
             <div className="mx-5 mt-5 bg-white p-2">
                 <div className="flex flex-row p-5 space-x-3 justify-center">
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5  border-purple-500 p-5 flex flex-row">
-                        <div className="h-20 w-20 bg-purple-400 rounded-full"></div>
+                        <div className="h-20 w-20 bg-purple-400 flex items-center justify-center rounded-full">
+                            <People size="50" color="#FFFFFF" />
+                        </div>
                         <div className="">
                             <h1 className="font-extrabold">Total users</h1>
-                            <p className="font-extrabold text-5xl">2000</p>
+                            <p className="font-extrabold text-5xl">{stats?.data}</p>
                         </div>
                     </div>
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5   border-purple-500 p-5 flex flex-row">
@@ -57,11 +79,16 @@ const Home = () => {
                         </div>
                     </div>
                 </div>
-                {isLoading ? <div>Loading...</div> : ""}
+
                 {/* {data.users?.map((x) => (
                     <p>Hello</p>
                 ))} */}
-                <div className="flex mx-5 p-5">
+                <div className="flex flex-col mx-5 p-5">
+                    <div className="flex flex-row space-x-2">
+                        <input type="text" className="p-2 border-2 h-10 w-[200px] rounded-md" placeholder="name" />
+                        <input type="text" className="border-2 p-2 h-10 w-[200px] rounded-md" placeholder="email" />
+                    </div>
+
                     <table className="table my-6  w-full  bg-white rounded-md text-sm text-left">
                         <thead className="text-xs text-white uppercase bg-purple-300">
                             <tr>
@@ -73,12 +100,12 @@ const Home = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-
+                            {isLoading ? <TableRowsLoader rowsNum={10} /> : ""}
                             {data?.users?.map((x) => (
                                 <tr className="font-light text-sm" key={x._id}>
                                     <td className="px-5 py-4 ">{x.first_name}</td>
                                     <td className="px-5 py-4">{x.email}</td>
-                                    <td className="px-5 py-4">{x.registration_date}</td>
+                                    <td className="px-5 py-4">{x.registration_date?.split("T")[0]}</td>
                                     <td className="px-5 py-4">{x.phone_number}</td>
                                 </tr>
                             ))}
@@ -86,6 +113,14 @@ const Home = () => {
                         </tbody>
 
                     </table>
+                    <TablePagination
+                        component="div"
+                        count={data?.total_pages}
+                        page={data?.current_page}
+                        // onPageChange={handleChangePage}
+                        rowsPerPage={rowsperPage}
+                    // onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
                 </div>
 
 

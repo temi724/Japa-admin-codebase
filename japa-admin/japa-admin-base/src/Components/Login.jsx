@@ -31,7 +31,7 @@ const Login = () => {
         { email, password }
       );
       if (data.message !== "Invalid details") {
-        console.log(data.data.message);
+        // console.log(data.data.message);
         sessionStorage.setItem("tokken", JSON.stringify(data.data.message));
         sessionStorage.setItem("details", JSON.stringify(data.data.user_data));
         setLogged("yes");
