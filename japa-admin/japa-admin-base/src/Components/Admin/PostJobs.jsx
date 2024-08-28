@@ -7,7 +7,7 @@ const PostJobs = () => {
     ]
     return (
         <>
-            <div className="mx-5 mt-5 bg-white  p-5">
+            <div className="mx-7 mt-5  p-7">
                 <h1>Post a New Job</h1>
                 {/* 1 */}
                 <div className="flex flex-row space-x-10  mt-5">

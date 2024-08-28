@@ -7,7 +7,7 @@ const SideBar = () => {
     const [coursemenu, setCourseMenu] = useState(false)
     return (
         <>
-            <div className="w-[300px] bg-white border-r-2 h-[100vh]">
+            <div className="w-[300px] bg-white border-r-2 h-[100vh] fixed">
                 <div className="p-5">
                     <NavLink to={"/admin/home"}>
                         <img src={japaLogo} className="h-[38px]" alt="" /></NavLink>
@@ -45,7 +45,7 @@ const SideBar = () => {
                             <div className="flex flex-row justify-between ">
                                 <div className="flex flex-row space-x-2 text-md">
                                     <Strongbox size="28" color="#313033" variant="Bold" />
-                                    <p>Courses</p>
+                                    <NavLink to={"/admin/courses"}>Courses</NavLink>
                                 </div>
                                 <ArrowDown2 onClick={() => setCourseMenu(!coursemenu)} size="22" color="#313033" />
                             </div>

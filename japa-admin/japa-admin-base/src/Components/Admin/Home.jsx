@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query"
 
-import { Strongbox, ArrowDown2, AddSquare, User, UserCirlceAdd, Setting2, Bag2, Airdrop } from "iconsax-react";
+import { Strongbox, ArrowDown2, Notepad2, AddSquare, User, UserCirlceAdd, Setting2, Bag2, Airdrop } from "iconsax-react";
 import { fetchStats, fetchUsers } from "../../api calls/api";
 import { People } from "iconsax-react";
 import Pagination from '@mui/material/Pagination';
@@ -36,31 +36,28 @@ const Home = () => {
         queryKey: ['getUsers', { limit, page, search }],
         queryFn: fetchUsers,
         staleTime: 10000 * 60 * 60 * 24,
-        refetchOnWindowFocus: false
+        // refetchOnWindowFocus: false
     })
 
     const { data: stats, isLoading: isLoadingStats, error: errorStats } = useQuery({
         queryKey: ['stats'],
         queryFn: fetchStats,
         staleTime: Infinity,
-        refetchOnWindowFocus: false
+        // refetchOnWindowFocus: false
     })
     console.log(data)
 
 
-
-
-
     return (
         <>
-            <div className="mx-5 mt-5 bg-white p-2">
-                <div className="flex flex-row p-5 space-x-3 justify-center">
+            <div className=" mx-20 mr-5   mt-5 bg-white h-full overflow-hidden   ">
+                <div className="flex flex-row p-10 space-x-3 justify-center">
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5  border-purple-500 p-5 flex flex-row">
                         <div className="h-20 w-20 bg-purple-400 flex items-center justify-center rounded-full">
                             <People size="50" color="#FFFFFF" />
                         </div>
                         <div className="">
-                            <h1 className="font-extrabold">Total users</h1>
+                            <h1 className="">Total users</h1>
                             <p className="font-extrabold text-5xl">{stats?.data}</p>
                         </div>
                     </div>
@@ -69,15 +66,17 @@ const Home = () => {
                             <Airdrop size="50" color="#FFFFFF" />
                         </div>
                         <div className="">
-                            <h1 className="font-extrabold">Jobs</h1>
+                            <h1 className="">Jobs</h1>
                             <p className="font-extrabold text-5xl">{stats?.jobs}</p>
                         </div>
                     </div>
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5   border-purple-500 p-5 flex flex-row">
-                        <div className="h-20 w-20 bg-purple-400 rounded-full"></div>
+                        <div className="h-20 w-20 bg-purple-400 rounded-full flex items-center justify-center">
+                            <Notepad2 size="52" color="#FFFFFF" />
+                        </div>
                         <div className="">
-                            <h1 className="font-extrabold">"</h1>
-                            <p className="font-extrabold text-5xl">2000</p>
+                            <h1 className="">Courses</h1>
+                            <p className="font-extrabold text-5xl">{stats?.courses}</p>
                         </div>
                     </div>
                 </div>
@@ -85,7 +84,7 @@ const Home = () => {
                 {/* {data.users?.map((x) => (
                     <p>Hello</p>
                 ))} */}
-                <div className="flex flex-col mx-5 p-5">
+                <div className="flex flex-col mx-5 p-10">
                     <div className="flex flex-row space-x-2">
                         <input type="text" className="p-2 border-2 h-10 w-[200px] rounded-md" placeholder="name" />
                         <input type="text" className="border-2 p-2 h-10 w-[200px] rounded-md" placeholder="email" />

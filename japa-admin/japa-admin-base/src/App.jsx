@@ -7,6 +7,7 @@ import Login from "./Components/Login";
 import Layout from "./Components/Layout";
 import Home from "./Components/Admin/Home";
 import PostJobs from "./Components/Admin/PostJobs";
+import Courses from "./Components/Admin/Courses";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="" element={<Navigate to="home" />} />
           <Route path="home" element={<Home />}></Route>
           <Route path="/admin/postjob" element={<PostJobs />} />
+          <Route path="/admin/courses" element={<Courses />} />
         </Route>
       </Routes>
     </>
