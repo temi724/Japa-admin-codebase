@@ -42,7 +42,7 @@ const Home = () => {
     const { data: stats, isLoading: isLoadingStats, error: errorStats } = useQuery({
         queryKey: ['stats'],
         queryFn: fetchStats,
-        staleTime: Infinity,
+        staleTime: 10000 * 60 * 60 * 24,
         // refetchOnWindowFocus: false
     })
     console.log(data)

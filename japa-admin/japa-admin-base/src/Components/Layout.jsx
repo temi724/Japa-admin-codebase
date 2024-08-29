@@ -13,7 +13,7 @@ const Layout = () => {
         <SideBar className="fixed" />
       </div>
       {/* Top */}
-      <div className=" lg:ml-[240px]  sm:col-start-1 lg:col-span-2 bg-gray-100 ">
+      <div className=" lg:ml-[240px] h-[100vh]  sm:col-start-1 lg:col-span-2 bg-gray-100 ">
         <TopNav className="" />
         <Outlet />
       </div>

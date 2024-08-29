@@ -1,15 +1,128 @@
+import { useState } from "react";
 import Select from "react-select"
+import { useQuery, useMutation, QueryClient, useQueryClient } from "@tanstack/react-query";
+import { fetchCourses, fetchjobs, postCourse } from "../../api calls/api";
+
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
+import Rating from "@mui/material/Rating";
+import TablePagination from '@mui/material/TablePagination';
+
+import { Skeleton, Table, TableCell } from "@mui/material";
+import { ArrowLeft3, Trash } from "iconsax-react";
+
+const TableRowsLoader = ({ rowsNum }) => {
+    return [...Array(rowsNum)].map((row, index) => (
+        <table key={index}>
+            <tr >
+                <td className="px-5 w-52 py-4 ">   <Skeleton animation="wave" variant="text" /></td>
+                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
+                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
+                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
+                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
+            </tr>
+
+        </table>
+    ));
+};
+
+const JobsTable = ({ data, isLoading, error }) => {
+    const [rowsPerPage, setRowsPerPage] = useState(10)
+    return (
+
+        <>
+            <div className="flex flex-row justify-between p-5 mx-5">
+                <h1 className="">Jobs</h1>
+                <div className="bg-purple-900 h-10 w-40 flex items-center justify-center rounded-3xl " onClick={() => manipulateState(2)}>
+                    <p className="text-white text-sm">Post New Job</p>
+                </div>
+            </div>
+
+            <div className="flex flex-col mx-5 p-5">
+                <div className="flex flex-row space-x-2">
+                    <input type="text" className="p-2 border-2 h-10 w-[200px] rounded-md" placeholder="title" />
+                    {/* <input type="text" className="border-2 p-2 h-10 w-[200px] rounded-md" placeholder="email" /> */}
+                </div>
+
+                <table className="table my-6  w-full  bg-white rounded-md text-sm text-left">
+                    <thead className="text-xs text-white uppercase bg-purple-300">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">Title</th>
+                            <th scope="col" class="px-6 py-4">Company</th>
+                            <th scope="col" class="px-6 py-4">Category</th>
+                            <th scope="col" class="px-6 py-4">Date published</th>
+                            <th scope="col" class="px-6 py-4">Actions</th>
+
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+                        {isLoading ? <TableRowsLoader rowsNum={10} /> : ""}
+                        {data?.jobs.map((x) => (
+                            <tr className="font-light text-sm" key={x._id}>
+                                <td className="px-5 py-4 ">{x.job_title}</td>
+                                <td className="px-5 py-4 ">{x.company_name}</td>
+                                <td className="px-5 py-4 ">{x.location}</td>
+                                <td className="px-5 py-4">{x.date_posted?.split("T")[0]}</td>
+                                {/* <td className="px-5 py-4">{x.about.schedule}</td> */}
+                                <td>
+                                    <div className="flex flex-row cusor-pointer">
+                                        <div>
+                                            <Trash size="22" color="#FF8A65" />
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+
+                    </tbody>
+
+                </table>
+                <TablePagination
+                    component="div"
+                    count={Number(data?.total_pages)}
+                    page={Number(data?.current_page)}
+                    // onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                // onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </div>
+        </>
+    )
+}
+
 const PostJobs = () => {
+    const [showState, setShowState] = useState(1)
+    const [page, setPage] = useState("")
+    const [search, setSearch] = useState("")
+    const [limit, setLimit] = useState("")
+    const [rowsperPage, setRowsPerPage] = useState(10)
     const options = [
         { value: 'chocolate', label: 'Chocolate' },
         { value: 'strawberry', label: 'Strawberry' },
         { value: 'vanilla', label: 'Vanilla' }
     ]
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['jobs', { limit, page, search }],
+        queryFn: fetchjobs,
+        staleTime: 10000 * 60 * 60 * 24,
+        // refetchOnWindowFocus: false
+    })
+
+    const ShowThis = () => {
+        if (showState === 1) {
+            return (<JobsTable data={data} />)
+
+
+        }
+    }
+
+
     return (
         <>
-            <div className="mx-7 mt-5  p-7">
-                <h1>Post a New Job</h1>
-                {/* 1 */}
+            <div className="mx-20 mr-5   mt-5 p-5 bg-white">
+                {ShowThis()}
+                {/* <h1>Post a New Job</h1>
+           
                 <div className="flex flex-row space-x-10  mt-5">
                     <div>
                         <label className="font-light">Job title</label> <br />
@@ -54,9 +167,9 @@ const PostJobs = () => {
                         <label className="font-light">Salary Type</label> <br />
                         <input type="text" className="h-[50px] rounded-md mt-2 w-[478px] p-2 border-2" placeholder="company name" />
                         {/* <input type="text" className="h-[50px] mt-7 rounded-md w-[478px] p-2 border-2" placeholder="Location" />
-                        <input type="text" className="h-[50px] mt-7 rounded-md w-[478px] p-2 border-2" placeholder="city" /> */}
+                        <input type="text" className="h-[50px] mt-7 rounded-md w-[478px] p-2 border-2" placeholder="city" /> 
                     </div>
-                </div>
+                </div> */}
 
             </div>
         </>

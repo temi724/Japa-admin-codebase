@@ -20,14 +20,14 @@ const SideBar = () => {
                             <div className="flex flex-row justify-between ">
                                 <div className="flex flex-row space-x-2 text-md">
                                     <Strongbox size="28" color="#313033" variant="Bold" />
-                                    <p>Job Posting</p>
+                                    <NavLink to={"/admin/postjob"} >Job Posting</NavLink>
                                 </div>
-                                <ArrowDown2 onClick={() => setjobMenu(!jobmenu)} size="22" color="#313033" />
+                                {/* <ArrowDown2 onClick={() => setjobMenu(!jobmenu)} size="22" color="#313033" /> */}
                             </div>
-                            {jobmenu ? <div className="ml-2" >
+                            {/* {jobmenu ? <div className="ml-2" >
 
                                 {[{ id: 1, value: "Post New Job", img: <AddSquare size="18" color="#FF8A65" />, goTo: "/admin/postjob" },
-                                { id: 2, value: "jobs", img: <Strongbox size="18" color="#313033" variant="Bold" />, goTo: "/admin/jobs" }]
+                                ]
                                     .map((x) => (
                                         <NavLink to={x.goTo} key={x.id} className="flex space-x-2 flex-row mt-6">
                                             <Strongbox size="28" color="#313033" variant="Bold" />
@@ -36,7 +36,7 @@ const SideBar = () => {
                                     ))
                                 }
 
-                            </div> : ""}
+                            </div> : ""} */}
                         </div>
                     </div>
                     {/* 2 */}
@@ -47,9 +47,9 @@ const SideBar = () => {
                                     <Strongbox size="28" color="#313033" variant="Bold" />
                                     <NavLink to={"/admin/courses"}>Courses</NavLink>
                                 </div>
-                                <ArrowDown2 onClick={() => setCourseMenu(!coursemenu)} size="22" color="#313033" />
+                                {/* <ArrowDown2 onClick={() => setCourseMenu(!coursemenu)} size="22" color="#313033" /> */}
                             </div>
-                            {coursemenu ? <div className="ml-2" >
+                            {/* {coursemenu ? <div className="ml-2" >
 
                                 {[{ id: 1, value: "Post New Course", img: <AddSquare size="18" color="#FF8A65" /> },
                                 ]
@@ -61,7 +61,7 @@ const SideBar = () => {
                                     ))
                                 }
 
-                            </div> : ""}
+                            </div> : ""} */}
                         </div>
                     </div>
                     {/* 3 */}
@@ -70,7 +70,8 @@ const SideBar = () => {
                             <div className="flex flex-row justify-between ">
                                 <div className="flex flex-row space-x-2 text-md">
                                     <UserCirlceAdd size="28" color="#313033" variant="Bold" />
-                                    <p>Users</p>
+
+                                    <NavLink to={"/admin/home"}>Users</NavLink>
                                 </div>
                                 {/* <ArrowDown2 onClick={() => setCourseMenu(!coursemenu)} size="22" color="#313033" /> */}
                             </div>
