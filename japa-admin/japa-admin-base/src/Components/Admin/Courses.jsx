@@ -1,5 +1,5 @@
 import { useQuery, useMutation, QueryClient, useQueryClient } from "@tanstack/react-query";
-import { fetchCourses, postCourse } from "../../api calls/api";
+import { fetchCourses, postCourse, deleteCourse } from "../../api calls/api";
 
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
@@ -7,24 +7,60 @@ import Rating from "@mui/material/Rating";
 import TablePagination from '@mui/material/TablePagination';
 import { useState } from "react"
 import { Skeleton, Table, TableCell } from "@mui/material";
-import { ArrowLeft3, Trash } from "iconsax-react";
+import { ArrowLeft3, Trash, InfoCircle } from "iconsax-react";
+import { toast } from "react-toastify";
+import { FourSquare } from "react-loading-indicators";
+import TableRowsLoader from "../ReUsableTable";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 
-const TableRowsLoader = ({ rowsNum }) => {
-    return [...Array(rowsNum)].map((row, index) => (
-        <table key={index}>
-            <tr >
-                <td className="px-5 w-52 py-4 ">   <Skeleton animation="wave" variant="text" /></td>
-                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
-                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
-                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
-                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
-            </tr>
-
-        </table>
-    ));
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
 };
-const CourseTable = ({ data, isLoading, error, manipulateState }) => {
+
+// const BasicModal = ({ open, setOpen, handleOpen, handleClose }) => {
+
+
+//     return (
+//         <div>
+//             <Button onClick={handleOpen}>Open modal</Button>
+//             <Modal
+//                 open={open}
+//                 onClose={handleClose}
+//                 aria-labelledby="modal-modal-title"
+//                 aria-describedby="modal-modal-description"
+//             >
+//                 <Box sx={style}>
+//                     <div className="flex items-center justify-center">
+//                         <InfoCircle size="32" color="#FF8A65" />
+//                     </div>
+
+//                     <h1 className="text-center">Are you sure you want to delete item?</h1>
+//                     <div className="flex  mt-5">
+//                         <div className="h-10 flex bg-red-500 items-center justify-center rounded-md w-full">
+//                             <p className="text-white hover:cursor-pointer ">YES</p>
+//                         </div>
+//                     </div>
+//                 </Box>
+//             </Modal>
+//         </div>
+//     );
+// }
+
+const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
     const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
     return (
 
         <>
@@ -34,6 +70,7 @@ const CourseTable = ({ data, isLoading, error, manipulateState }) => {
                     <p className="text-white text-sm">Post New Course</p>
                 </div>
             </div>
+            {/* <BasicModal open={open} handleClose={handleClose} handleOpen={handleOpen} /> */}
 
             <div className="flex flex-col mx-5 p-5">
                 <div className="flex flex-row space-x-2">
@@ -63,7 +100,7 @@ const CourseTable = ({ data, isLoading, error, manipulateState }) => {
                                 <td>
                                     <div className="flex flex-row cusor-pointer">
                                         <div>
-                                            <Trash size="22" color="#FF8A65" />
+                                            <Trash onClick={() => remove(x._id)} size="22" color="#FF8A65" />
                                         </div>
                                     </div>
                                 </td>
@@ -97,6 +134,7 @@ const Review = ({ manipulateState, title,
     platform,
     link,
     post,
+    isPending,
     requirement, }) => {
     return (
         <>
@@ -122,14 +160,15 @@ const Review = ({ manipulateState, title,
                     {requirement.split(".").map((x, index) => (
                         <p className="text-sm font-light leading-6" key={index}>{x}</p>
                     ))}
-                    <h1 className="mt-10">Course Outline:</h1>
+                    <h1 className="mt-10 ">Course Outline:</h1>
                     {courseOutline.split(".").map((x, index) => (
-                        <p className="text-sm font-light leading-6" key={index}>{x}</p>
+                        <p className="text-sm font-light max-w-[770px] leading-6" key={index}>{x}</p>
                     ))}
 
                 </div>
-                <div onClick={post} className="h-10 mx-2 flex cursor-pointer items-center text-white justify-center rounded-3xl w-32 bg-purple-800">
+                <div onClick={post} className="h-10 p-2  flex-row mx-2 flex cursor-pointer items-center text-white justify-center rounded-3xl w-40 bg-purple-800">
                     <p>submit</p>
+                    {isPending ? <FourSquare color="#ffffff" size="small" text="" textColor="" /> : ""}
                 </div>
             </div></>
     )
@@ -235,9 +274,11 @@ const Forms = ({
 
 
                 </div>
-                <div onClick={() => manipulateState(3)} className="h-10  mt-5 cursor-pointer w-[20%] flex items-center justify-center bg-purple-900 rounded-md">
-                    <p className="text-white">Review</p>
-                </div>
+                {title !== "" && ratings !== "" && lessoncount !== "" ?
+                    <div onClick={() => manipulateState(3)} className="h-10  mt-5 cursor-pointer w-[20%] flex items-center justify-center bg-purple-900 rounded-md">
+                        <p className="text-white">Review</p>
+                    </div> : <p className="mt-2 text-red-500">please fill in course details!</p>}
+
             </div>
 
 
@@ -270,7 +311,7 @@ const Courses = () => {
     const { data, isLoading, error } = useQuery({
         queryKey: ['courses', { limit, page, title }],
         queryFn: fetchCourses,
-        staleTime: 10000 * 60 * 60 * 24,
+        // staleTime: 10000 * 60 * 60 * 24,
         refetchOnWindowFocus: true
     })
 
@@ -278,9 +319,20 @@ const Courses = () => {
         mutationFn: postCourse,
         onSuccess: () => {
             queryClient.invalidateQueries(['courses', 'stats'])
+            toast.success("Course saved")
 
         }
     })
+    const { mutateAsync: removeCourse, isPending: delPending } = useMutation({
+        mutationFn: deleteCourse,
+        onSuccess: () => {
+            queryClient.invalidateQueries(['courses', 'stats'])
+            toast.success("deleted")
+
+        }
+    })
+
+
 
     const manipulateState = (num) => {
         setActionState(num)
@@ -316,11 +368,24 @@ const Courses = () => {
 
     }
 
+    const deleteData = async (_id) => {
+        try {
+            await removeCourse({ _id: _id })
+        } catch (ex) {
+            console.log(error)
+        }
+    }
+
+
+
+
+
     const ShowItem = () => {
         if (actionState === 1) {
             return (
                 <CourseTable
                     isLoading={isLoading} data={data}
+                    remove={deleteData}
                     error={error} manipulateState={manipulateState} />
             )
         }
@@ -353,6 +418,7 @@ const Courses = () => {
                     platform={platform}
                     link={link}
                     requirement={requirement}
+
                 />
             )
         }
@@ -372,6 +438,7 @@ const Courses = () => {
                     link={link}
                     requirement={requirement}
                     post={sendData}
+                    isPending={isPending}
                 />
             )
         }

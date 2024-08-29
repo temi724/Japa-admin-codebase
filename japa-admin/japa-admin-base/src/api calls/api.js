@@ -78,7 +78,31 @@ export const postCourse = async (data) => {
         body: JSON.stringify(data)
     }
     try {
-        const response = await fetch("https://q969qj2z-2000.uks1.devtunnels.ms//japa/v1/admin/postcourse", options);
+        const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/postcourse", options);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const responseData = await response.json();
+        console.log('Success:', responseData); // Handle the response data
+        return responseData;
+    } catch (error) {
+        console.error('Error:', error); // Handle any errors
+    }
+
+}
+
+export const deleteCourse = async (_id) => {
+    let tokks = JSON.parse(sessionStorage.getItem("tokken")).split(" ")[1]
+    const options = {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokks}`
+        },
+        body: JSON.stringify(_id)
+    }
+    try {
+        const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/deletecourse", options);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }

@@ -2,8 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import japaLogo from "../assets/JAPALOGO.png";
 import { Eye, ArrowLeft } from "iconsax-react";
 import { useEffect, useState } from "react";
+import { FourSquare } from "react-loading-indicators";
 
 import axios from "axios";
+import { toast } from "react-toastify";
 const Login = () => {
   const [loginState, setLoginState] = useState(1);
   const [email, setEmail] = useState("");
@@ -11,6 +13,7 @@ const Login = () => {
   const [maskedPassword, setMaskedPassword] = useState("");
   const [isMasked, setIsMasked] = useState(true);
   const [logged, setLogged] = useState("");
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (logged === "yes") {
@@ -23,37 +26,39 @@ const Login = () => {
   };
 
   const login_call = async (email, password) => {
-    console.log(email, password);
+
     try {
       //extract to env..
-      const data = await axios.post(
+      setLoading(true)
+      const { data } = await axios.post(
         "https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/login",
         { email, password }
       );
       if (data.message !== "Invalid details") {
+        console.log(data)
         // console.log(data.data.message);
-        sessionStorage.setItem("tokken", JSON.stringify(data.data.message));
-        sessionStorage.setItem("details", JSON.stringify(data.data.user_data));
+        sessionStorage.setItem("tokken", JSON.stringify(data.message));
+        sessionStorage.setItem("details", JSON.stringify(data.user_data));
         setLogged("yes");
+        setLoading(false)
         return data;
       } else {
-        return "wrong details";
+        toast.error("please your check credentials")
+        setLoading(false)
       }
     } catch (ex) {
       console.log(ex);
+      setLoading(false)
     }
   };
 
-  const showValue = () => {
-    if (isMasked & (password.length > 0)) {
-      return "*".repeat(password.length);
-    }
-    return password;
-  };
 
   const handle_login = () => {
     if ((email !== "") & (password !== "")) {
       login_call(email, password);
+    }
+    else {
+      console.log("invalid details")
     }
   };
 
@@ -106,9 +111,11 @@ const Login = () => {
                   {(email !== "") & (password !== "") ? (
                     <div
                       onClick={handle_login}
-                      className="flex   text-white items-center justify-center bg-[#5922A9] h-10 mt-10 rounded-[24px]"
+                      className="flex flex-row cusor-pointer  text-white items-center justify-center bg-[#5922A9] h-10 mt-10 rounded-[24px]"
                     >
-                      <p> Sign in </p>
+                      <p className="hover:cursor-pointer"> Sign in </p>
+                      {loading ? <FourSquare color="#ffffff" size="small" text="" textColor="" /> : ""}
+
                     </div>
                   ) : (
                     <p className="font-light text-sm text-center mt-5 text-red-600">

@@ -8,14 +8,19 @@ import Layout from "./Components/Layout";
 import Home from "./Components/Admin/Home";
 import PostJobs from "./Components/Admin/PostJobs";
 import Courses from "./Components/Admin/Courses";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function App() {
   const [count, setCount] = useState(0);
 
+
   return (
     <>
+      <ToastContainer />
       <Routes>
+
         <Route path="/" element={<Login />} />
         <Route path="/admin" element={<Layout />}>
           <Route path="" element={<Navigate to="home" />} />
