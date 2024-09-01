@@ -79,7 +79,7 @@ const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
                 </div>
 
                 <table className="table my-6  w-full  bg-white rounded-md text-sm text-left">
-                    <thead className="text-xs text-white uppercase bg-purple-300">
+                    <thead className="text-xs text-white uppercase bg-purple-900">
                         <tr>
                             <th scope="col" class="px-6 py-4">Title</th>
                             <th scope="col" class="px-6 py-4">Level</th>

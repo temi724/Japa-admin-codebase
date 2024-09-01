@@ -8,23 +8,10 @@ import Stack from '@mui/material/Stack';
 import TablePagination from '@mui/material/TablePagination';
 import { useState } from "react"
 import { Skeleton, Table, TableCell } from "@mui/material";
+import TableRowsLoader from "../ReUsableTable";
 
 
 
-const TableRowsLoader = ({ rowsNum }) => {
-    return [...Array(rowsNum)].map((row, index) => (
-        <table key={index}>
-            <tr >
-                <td className="px-5 w-52 py-4 ">   <Skeleton animation="wave" variant="text" /></td>
-                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
-                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
-                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
-                <td className="px-5 w-52 py-4">   <Skeleton animation="wave" variant="text" /></td>
-            </tr>
-
-        </table>
-    ));
-};
 
 const Home = () => {
     const [search, setSearch] = useState("")
@@ -53,7 +40,7 @@ const Home = () => {
             <div className=" mx-20 mr-5   mt-5 bg-white h-full overflow-hidden   ">
                 <div className="flex flex-row p-10 space-x-3 justify-center">
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5  border-purple-500 p-5 flex flex-row">
-                        <div className="h-20 w-20 bg-purple-400 flex items-center justify-center rounded-full">
+                        <div className="h-20 w-20 bg-purple-900 flex items-center justify-center rounded-full">
                             <People size="50" color="#FFFFFF" />
                         </div>
                         <div className="">
@@ -62,7 +49,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5   border-purple-500 p-5 flex flex-row">
-                        <div className="h-20 w-20 bg-purple-400 flex items-center justify-center rounded-full">
+                        <div className="h-20 w-20 bg-purple-900 flex items-center justify-center rounded-full">
                             <Airdrop size="50" color="#FFFFFF" />
                         </div>
                         <div className="">
@@ -71,7 +58,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5   border-purple-500 p-5 flex flex-row">
-                        <div className="h-20 w-20 bg-purple-400 rounded-full flex items-center justify-center">
+                        <div className="h-20 w-20 bg-purple-900 rounded-full flex items-center justify-center">
                             <Notepad2 size="52" color="#FFFFFF" />
                         </div>
                         <div className="">
@@ -91,7 +78,7 @@ const Home = () => {
                     </div>
 
                     <table className="table my-6  w-full  bg-white rounded-md text-sm text-left">
-                        <thead className="text-xs text-white uppercase bg-purple-300">
+                        <thead className="text-xs text-white uppercase bg-purple-900">
                             <tr>
                                 <th scope="col" class="px-6 py-4">First Name</th>
                                 <th scope="col" class="px-6 py-4">Email</th>

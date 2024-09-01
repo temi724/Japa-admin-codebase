@@ -84,7 +84,7 @@ const SideBar = () => {
                             <div className="flex flex-row justify-between ">
                                 <div className="flex flex-row space-x-2 text-md">
                                     <Strongbox size="28" color="#313033" variant="Bold" />
-                                    <p>Talent Assessment</p>
+                                    <NavLink to={"/admin/talents"} >Coaching</NavLink>
                                 </div>
                                 {/* <ArrowDown2 onClick={() => setCourseMenu(!coursemenu)} size="22" color="#313033" /> */}
                             </div>

@@ -1,3 +1,4 @@
+
 export const fetchUsers = async () => {
     const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/users");
     if (!response.ok) {
@@ -66,9 +67,36 @@ export const fetchjobs = async () => {
 
 }
 
+export const fetchTalents = async () => {
+    const tokks = JSON.parse(sessionStorage.getItem("tokken")).split(" ")[1]
+    const options = {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokks}`
+        }
+    }
+    const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/talents", options)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    const {
+        talents,
+        total_pages,
+        current_page
+    } = data
+    return {
+        talents,
+        total_pages,
+        current_page
+    }
+}
+
+
 
 export const postCourse = async (data) => {
-    let tokks = JSON.parse(sessionStorage.getItem("tokken")).split(" ")[1]
+    const tokks = JSON.parse(sessionStorage.getItem("tokken")).split(" ")[1]
     const options = {
         method: "POST",
         headers: {
@@ -91,8 +119,32 @@ export const postCourse = async (data) => {
 
 }
 
+export const postJobs = async (data) => {
+    const tokks = JSON.parse(sessionStorage.getItem("tokken")).split(" ")[1]
+    const options = {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokks}`
+        },
+        body: JSON.stringify(data)
+    }
+    try {
+        const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/postjob", options);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const responseData = await response.json();
+        console.log('Success:', responseData); // Handle the response data
+        return responseData;
+    } catch (error) {
+        console.error('Error:', error); // Handle any errors
+    }
+
+}
+
 export const deleteCourse = async (_id) => {
-    let tokks = JSON.parse(sessionStorage.getItem("tokken")).split(" ")[1]
+    const tokks = JSON.parse(sessionStorage.getItem("tokken")).split(" ")[1]
     const options = {
         method: "POST",
         headers: {
@@ -103,6 +155,30 @@ export const deleteCourse = async (_id) => {
     }
     try {
         const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/deletecourse", options);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const responseData = await response.json();
+        console.log('Success:', responseData); // Handle the response data
+        return responseData;
+    } catch (error) {
+        console.error('Error:', error); // Handle any errors
+    }
+
+}
+
+export const deleteJobs = async (_id) => {
+    const tokks = JSON.parse(sessionStorage.getItem("tokken")).split(" ")[1]
+    const options = {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokks}`
+        },
+        body: JSON.stringify(_id)
+    }
+    try {
+        const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/deletejobs", options);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }

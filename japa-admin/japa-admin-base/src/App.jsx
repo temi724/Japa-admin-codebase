@@ -10,6 +10,7 @@ import PostJobs from "./Components/Admin/PostJobs";
 import Courses from "./Components/Admin/Courses";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Talents from "./Components/Admin/Talents";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="home" element={<Home />}></Route>
           <Route path="/admin/postjob" element={<PostJobs />} />
           <Route path="/admin/courses" element={<Courses />} />
+          <Route path="/admin/talents" element={<Talents />} />
         </Route>
       </Routes>
     </>
