@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-quer
 
 import { Strongbox, ArrowDown2, Notepad2, AddSquare, User, UserCirlceAdd, Setting2, Bag2, Airdrop } from "iconsax-react";
 import { fetchStats, fetchUsers } from "../../api calls/api";
-import { People } from "iconsax-react";
+import { People, ProfileTick } from "iconsax-react";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import TablePagination from '@mui/material/TablePagination';
@@ -40,7 +40,7 @@ const Home = () => {
             <div className=" mx-20 mr-5   mt-5 bg-white h-full overflow-hidden   ">
                 <div className="flex flex-row p-10 space-x-3 justify-center">
                     <div className="h-40 rounded-md w-[400px] border-2 space-x-5  border-purple-500 p-5 flex flex-row">
-                        <div className="h-20 w-20 bg-purple-900 flex items-center justify-center rounded-full">
+                        <div className="h-20 w-20 bg-purple-900 flex items-center  justify-center rounded-full">
                             <People size="50" color="#FFFFFF" />
                         </div>
                         <div className="">
@@ -77,7 +77,7 @@ const Home = () => {
                         <input type="text" className="border-2 p-2 h-10 w-[200px] rounded-md" placeholder="email" />
                     </div>
 
-                    <table className="table my-6  w-full  bg-white rounded-md text-sm text-left">
+                    <table className="table my-6   w-full  bg-white rounded-md text-sm text-left">
                         <thead className="text-xs text-white uppercase bg-purple-900">
                             <tr>
                                 <th scope="col" class="px-6 py-4">First Name</th>
@@ -87,11 +87,19 @@ const Home = () => {
 
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+                        <tbody className="divide-y divide-gray-200-300 border-t border-gray-100">
                             {isLoading ? <TableRowsLoader rowsNum={10} /> : ""}
                             {data?.users?.map((x) => (
                                 <tr className="font-light text-sm" key={x._id}>
-                                    <td className="px-5 py-4 ">{x.first_name}</td>
+                                    <td className="px-5 py-4 ">
+                                        <div className="flex items-center space-x-3 flex-row">
+                                            <div className="h-10 w-10 justify-center bg-purple-500 flex items-center rounded-full">
+                                                <ProfileTick size="30" color="#FFFFFF" />
+                                            </div>
+                                            <div>{x.first_name}</div>
+                                        </div>
+
+                                    </td>
                                     <td className="px-5 py-4">{x.email}</td>
                                     <td className="px-5 py-4">{x.registration_date?.split("T")[0]}</td>
                                     <td className="px-5 py-4">{x.phone_number}</td>
