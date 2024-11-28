@@ -98,7 +98,6 @@ const Home = () => {
                                             </div>
                                             <div>{x.first_name}</div>
                                         </div>
-
                                     </td>
                                     <td className="px-5 py-4">{x.email}</td>
                                     <td className="px-5 py-4">{x.registration_date?.split("T")[0]}</td>

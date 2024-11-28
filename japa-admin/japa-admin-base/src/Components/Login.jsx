@@ -31,7 +31,7 @@ const Login = () => {
       //extract to env..
       setLoading(true)
       const { data } = await axios.post(
-        "https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/login",
+        "https://server.japatalent.com/japa/v1/admin/login",
         { email, password }
       );
       if (data.message !== "Invalid details") {

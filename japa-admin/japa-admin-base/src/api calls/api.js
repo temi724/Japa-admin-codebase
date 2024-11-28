@@ -1,6 +1,9 @@
 
+const base = "http://localhost:2000/japa/v1/"
+// / japa / v1
+// https://server.japatalent.com/
 export const fetchUsers = async () => {
-    const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/users");
+    const response = await fetch(`${base}admin/users`);
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
@@ -21,7 +24,7 @@ export const fetchUsers = async () => {
 };
 
 export const fetchStats = async () => {
-    const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/stats")
+    const response = await fetch(`${base}admin/stats`)
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
@@ -31,7 +34,7 @@ export const fetchStats = async () => {
 }
 
 export const fetchCourses = async () => {
-    const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/courses")
+    const response = await fetch(`${base}admin/courses`)
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
@@ -49,7 +52,7 @@ export const fetchCourses = async () => {
 
 }
 export const fetchjobs = async () => {
-    const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/jobs")
+    const response = await fetch(`${base}admin/jobs`)
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
@@ -76,7 +79,7 @@ export const fetchTalents = async () => {
             'Authorization': `Bearer ${tokks}`
         }
     }
-    const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/talents", options)
+    const response = await fetch(`${base}admin/talents`, options)
     if (!response.ok) {
         throw new Error('Network response was not ok');
     }
@@ -106,7 +109,7 @@ export const postCourse = async (data) => {
         body: JSON.stringify(data)
     }
     try {
-        const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/postcourse", options);
+        const response = await fetch(`${base}admin/postcourse`, options);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -130,7 +133,7 @@ export const postJobs = async (data) => {
         body: JSON.stringify(data)
     }
     try {
-        const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/postjob", options);
+        const response = await fetch(`${base}admin/postjob`, options);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -154,7 +157,7 @@ export const deleteCourse = async (_id) => {
         body: JSON.stringify(_id)
     }
     try {
-        const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/deletecourse", options);
+        const response = await fetch(`${base}admin/deletecourse`, options);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -178,7 +181,7 @@ export const deleteJobs = async (_id) => {
         body: JSON.stringify(_id)
     }
     try {
-        const response = await fetch("https://coral-app-9xy6y.ondigitalocean.app/japa/v1/admin/deletejobs", options);
+        const response = await fetch(`${base}admin/deletejobs`, options);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
