@@ -1,5 +1,6 @@
 
-const base = "http://localhost:2000/japa/v1/"
+const base = "https://server.japatalent.com/japa/v1/"
+// const base = "http://localhost:2000/japa/v1/"
 // / japa / v1
 // https://server.japatalent.com/
 export const fetchUsers = async () => {
