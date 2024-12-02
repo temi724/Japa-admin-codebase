@@ -83,7 +83,7 @@ const Login = () => {
               <div>
                 <img src={japaLogo} alt="" />
                 <h1 className="mt-10 font-medium text-[30px]">Welcome back!</h1>
-                {/* Form input */}
+
                 <div className="flex flex-col mt-10">
                   <label htmlFor=""> Email: </label>
                   <input
