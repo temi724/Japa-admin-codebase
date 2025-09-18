@@ -167,3 +167,27 @@ export const deleteJobs = async (_id) => {
     console.error("Error:", error); // Handle any errors
   }
 };
+
+export const deleteUser = async (_id) => {
+  const tokks = JSON.parse(sessionStorage.getItem("tokken")).split(" ")[1];
+  const options = {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${tokks}`,
+    },
+    body: JSON.stringify(_id),
+  };
+  try {
+    const response = await fetch(`${base}admin/deleteuser`, options);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const responseData = await response.json();
+    console.log("Success:", responseData); // Handle the response data
+    return responseData;
+  } catch (error) {
+    console.error("Error:", error); // Handle any errors
+    throw error;
+  }
+};

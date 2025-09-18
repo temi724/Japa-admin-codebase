@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
     Strongbox, 
     ArrowDown2, 
@@ -18,7 +18,7 @@ import {
     ExportSquare,
     Briefcase
 } from "iconsax-react";
-import { fetchStats, fetchUsers, fetchjobs } from "../../api calls/api";
+import { fetchStats, fetchUsers, fetchjobs, deleteUser } from "../../api calls/api";
 import { People, ProfileTick } from "iconsax-react";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
@@ -26,15 +26,18 @@ import TablePagination from '@mui/material/TablePagination';
 import { useState } from "react";
 import { Skeleton, Table, TableCell } from "@mui/material";
 import TableRowsLoader from "../ReUsableTable";
+import { toast } from "react-toastify";
 
 const Home = () => {
     const [search, setSearch] = useState("");
+    const [emailSearch, setEmailSearch] = useState("");
     const [page, setPage] = useState("");
     const [limit, setLimit] = useState("");
     const [rowsperPage, setRowsPerPage] = useState(10);
 
+    // Use empty search for API to get all users, then filter client-side
     const { data, isLoading, error } = useQuery({
-        queryKey: ['getUsers', { limit, page, search }],
+        queryKey: ['getUsers', { limit, page, search: "" }],
         queryFn: fetchUsers,
         staleTime: 10000 * 60 * 60 * 24,
     });
@@ -50,6 +53,25 @@ const Home = () => {
         queryFn: fetchjobs,
         staleTime: 10000 * 60 * 60 * 24,
     });
+
+    const queryClient = useQueryClient();
+
+    const deleteUserMutation = useMutation({
+        mutationFn: deleteUser,
+        onSuccess: () => {
+            toast.success("User deleted successfully");
+            queryClient.invalidateQueries(['getUsers']);
+        },
+        onError: (error) => {
+            toast.error("Failed to delete user: " + error.message);
+        }
+    });
+
+    const handleDeleteUser = (userId) => {
+        if (window.confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+            deleteUserMutation.mutate({ _id: userId });
+        }
+    };
 
     const statsCards = [
         {
@@ -173,6 +195,8 @@ const Home = () => {
                                 <input
                                     type="text"
                                     placeholder="Search by email"
+                                    value={emailSearch}
+                                    onChange={(e) => setEmailSearch(e.target.value)}
                                     className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:border-[#5922A9] focus:ring-4 focus:ring-purple-100 outline-none transition-all duration-200 w-full sm:w-64"
                                 />
                             </div>
@@ -209,7 +233,19 @@ const Home = () => {
                             {isLoading ? (
                                 <TableRowsLoader rowsNum={10} />
                             ) : (
-                                data?.users?.map((user) => (
+                                (() => {
+                                    // Filter users based on search terms
+                                    const users = data?.users || [];
+                                    const filteredUsers = users.filter(user => {
+                                        const matchesName = search === "" || 
+                                            user.first_name?.toLowerCase().includes(search.toLowerCase()) ||
+                                            user.last_name?.toLowerCase().includes(search.toLowerCase());
+                                        const matchesEmail = emailSearch === "" || 
+                                            user.email?.toLowerCase().includes(emailSearch.toLowerCase());
+                                        return matchesName && matchesEmail;
+                                    });
+                                    
+                                    return filteredUsers.map((user) => (
                                     <tr key={user._id} className="hover:bg-gray-50 transition-colors duration-150">
                                         <td className="px-6 py-3">
                                             <div className="flex items-center space-x-3">
@@ -237,13 +273,18 @@ const Home = () => {
                                                 <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200">
                                                     <Edit size="14" />
                                                 </button>
-                                                <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200">
+                                                <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200" 
+                                                    onClick={() => handleDeleteUser(user._id)}
+                                                    disabled={deleteUserMutation.isPending}
+                                                    title="Delete User"
+                                                >
                                                     <Trash size="14" />
                                                 </button>
                                             </div>
                                         </td>
                                     </tr>
-                                ))
+                                ));
+                                })()
                             )}
                         </tbody>
                     </table>
