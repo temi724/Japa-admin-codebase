@@ -18,7 +18,7 @@ import {
     ExportSquare,
     Briefcase
 } from "iconsax-react";
-import { fetchStats, fetchUsers } from "../../api calls/api";
+import { fetchStats, fetchUsers, fetchjobs } from "../../api calls/api";
 import { People, ProfileTick } from "iconsax-react";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
@@ -42,6 +42,12 @@ const Home = () => {
     const { data: stats, isLoading: isLoadingStats, error: errorStats } = useQuery({
         queryKey: ['stats'],
         queryFn: fetchStats,
+        staleTime: 10000 * 60 * 60 * 24,
+    });
+
+    const { data: jobsData, isLoading: isLoadingJobs, error: errorJobs } = useQuery({
+        queryKey: ['jobs'],
+        queryFn: fetchjobs,
         staleTime: 10000 * 60 * 60 * 24,
     });
 
@@ -81,13 +87,13 @@ const Home = () => {
         },
         {
             id: 4,
-            title: "Total Revenue",
-            value: "$24,500",
-            icon: Strongbox,
+            title: "Total Jobs",
+            value: jobsData?.total_jobs || jobsData?.jobs?.length || 0,
+            icon: Bag2,
             color: "from-orange-500 to-orange-600",
             bgColor: "bg-orange-50",
             iconColor: "text-orange-600",
-            trend: "+23%",
+            trend: "+5%",
             trendUp: true
         }
     ];
@@ -97,12 +103,12 @@ const Home = () => {
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-                    <p className="text-gray-600 mt-2">Welcome back! Here's what's happening with Japa today.</p>
+                    <h1 className="text-2xl font-medium text-gray-900">Dashboard Overview</h1>
+                    <p className="text-gray-600 mt-2 text-sm">Welcome back! Here's what's happening with Japa today.</p>
                 </div>
                 <div className="mt-4 lg:mt-0">
-                    <button className="bg-gradient-to-r from-[#5922A9] to-[#7B3EC4] text-white px-6 py-3 rounded-xl font-semibold hover:from-[#4A1D96] hover:to-[#6B35B1] transition-all duration-200 shadow-lg flex items-center space-x-2">
-                        <ExportSquare size="20" />
+                    <button className="bg-gradient-to-r from-[#5922A9] to-[#7B3EC4] text-white px-5 py-2 rounded-xl font-normal hover:from-[#4A1D96] hover:to-[#6B35B1] transition-all duration-200 shadow-lg flex items-center space-x-2 text-sm">
+                        <ExportSquare size="18" />
                         <span>Export Report</span>
                     </button>
                 </div>
@@ -118,16 +124,16 @@ const Home = () => {
                                 <div className={`p-3 rounded-xl ${card.bgColor}`}>
                                     <IconComponent size="24" className={card.iconColor} />
                                 </div>
-                                <div className={`flex items-center space-x-1 text-sm ${
+                                <div className={`flex items-center space-x-1 text-xs ${
                                     card.trendUp ? 'text-green-600' : 'text-red-600'
                                 }`}>
-                                    <TrendUp size="16" className={card.trendUp ? 'rotate-0' : 'rotate-180'} />
-                                    <span className="font-medium">{card.trend}</span>
+                                    <TrendUp size="14" className={card.trendUp ? 'rotate-0' : 'rotate-180'} />
+                                    <span className="font-normal">{card.trend}</span>
                                 </div>
                             </div>
                             <div className="mt-4">
-                                <h3 className="text-gray-600 text-sm font-medium">{card.title}</h3>
-                                <p className="text-2xl font-bold text-gray-900 mt-1">
+                                <h3 className="text-gray-600 text-xs font-normal">{card.title}</h3>
+                                <p className="text-xl font-medium text-gray-900 mt-1">
                                     {isLoadingStats ? (
                                         <div className="animate-pulse bg-gray-200 h-8 w-16 rounded"></div>
                                     ) : (
@@ -146,8 +152,8 @@ const Home = () => {
                 <div className="p-6 border-b border-gray-100">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900">Recent Users</h2>
-                            <p className="text-gray-600 text-sm mt-1">Manage and view user accounts</p>
+                            <h2 className="text-lg font-medium text-gray-900">Recent Users</h2>
+                            <p className="text-gray-600 text-xs mt-1">Manage and view user accounts</p>
                         </div>
                         
                         {/* Search and Filters */}
@@ -182,19 +188,19 @@ const Home = () => {
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b border-gray-100">
                             <tr>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-normal text-gray-600 uppercase tracking-wider">
                                     User
                                 </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-normal text-gray-600 uppercase tracking-wider">
                                     Email
                                 </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-normal text-gray-600 uppercase tracking-wider">
                                     Registration Date
                                 </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-normal text-gray-600 uppercase tracking-wider">
                                     Phone
                                 </th>
-                                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-normal text-gray-600 uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
@@ -205,34 +211,34 @@ const Home = () => {
                             ) : (
                                 data?.users?.map((user) => (
                                     <tr key={user._id} className="hover:bg-gray-50 transition-colors duration-150">
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-3">
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-10 h-10 bg-gradient-to-r from-[#5922A9] to-[#7B3EC4] rounded-full flex items-center justify-center">
-                                                    <span className="text-white font-semibold text-sm">
+                                                <div className="w-8 h-8 bg-gradient-to-r from-[#5922A9] to-[#7B3EC4] rounded-full flex items-center justify-center">
+                                                    <span className="text-white font-normal text-xs">
                                                         {user.first_name?.charAt(0) || 'U'}
                                                     </span>
                                                 </div>
                                                 <div>
-                                                    <p className="font-semibold text-gray-900">{user.first_name}</p>
-                                                    <p className="text-sm text-gray-500">ID: {user._id.slice(-6)}</p>
+                                                    <p className="font-normal text-gray-900 text-sm">{user.first_name}</p>
+                                                    <p className="text-xs text-gray-500">ID: {user._id.slice(-6)}</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-900">{user.email}</td>
-                                        <td className="px-6 py-4 text-gray-600">
+                                        <td className="px-6 py-3 text-gray-900 text-sm">{user.email}</td>
+                                        <td className="px-6 py-3 text-gray-600 text-sm">
                                             {user.registration_date?.split("T")[0]}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-600">{user.phone_number || 'N/A'}</td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-3 text-gray-600 text-sm">{user.phone_number || 'N/A'}</td>
+                                        <td className="px-6 py-3">
                                             <div className="flex items-center space-x-2">
                                                 <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200">
-                                                    <Eye size="16" />
+                                                    <Eye size="14" />
                                                 </button>
                                                 <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200">
-                                                    <Edit size="16" />
+                                                    <Edit size="14" />
                                                 </button>
                                                 <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200">
-                                                    <Trash size="16" />
+                                                    <Trash size="14" />
                                                 </button>
                                             </div>
                                         </td>

@@ -79,13 +79,13 @@ const JobsTable = ({ data, deleteData, isLoading, error, mutateState }) => {
                 <div className="bg-white rounded-xl shadow-lg p-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
-                                    <Briefcase className="text-white" size={20} />
+                            <h1 className="text-2xl font-medium text-gray-900 flex items-center gap-3">
+                                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+                                    <Briefcase className="text-white" size={18} />
                                 </div>
                                 Job Management
                             </h1>
-                            <p className="text-gray-600 mt-2">Manage job postings and applications</p>
+                            <p className="text-gray-600 mt-2 text-sm">Manage job postings and applications</p>
                         </div>
                         
                         <div className="flex flex-col sm:flex-row gap-3">
@@ -108,8 +108,8 @@ const JobsTable = ({ data, deleteData, isLoading, error, mutateState }) => {
                     <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Total Jobs</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">{jobs.length}</p>
+                                <p className="text-gray-600 text-sm font-normal">Total Jobs</p>
+                                <p className="text-xl font-medium text-gray-900 mt-1">{jobs.length}</p>
                             </div>
                             <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
                                 <Briefcase className="text-emerald-600" size={24} />
@@ -120,8 +120,8 @@ const JobsTable = ({ data, deleteData, isLoading, error, mutateState }) => {
                     <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Companies</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">
+                                <p className="text-gray-600 text-sm font-normal">Companies</p>
+                                <p className="text-xl font-medium text-gray-900 mt-1">
                                     {new Set(jobs.map(job => job.company_name)).size}
                                 </p>
                             </div>
@@ -134,8 +134,8 @@ const JobsTable = ({ data, deleteData, isLoading, error, mutateState }) => {
                     <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Remote Jobs</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">
+                                <p className="text-gray-600 text-sm font-normal">Remote Jobs</p>
+                                <p className="text-xl font-medium text-gray-900 mt-1">
                                     {jobs.filter(job => job.location?.toLowerCase().includes('remote')).length}
                                 </p>
                             </div>
@@ -148,8 +148,8 @@ const JobsTable = ({ data, deleteData, isLoading, error, mutateState }) => {
                     <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">This Month</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">
+                                <p className="text-gray-600 text-sm font-normal">This Month</p>
+                                <p className="text-xl font-medium text-gray-900 mt-1">
                                     {jobs.filter(job => {
                                         const jobDate = new Date(job.date_posted);
                                         const now = new Date();
@@ -200,11 +200,11 @@ const JobsTable = ({ data, deleteData, isLoading, error, mutateState }) => {
                         <table className="w-full">
                             <thead className="bg-gray-50 border-b border-gray-200">
                                 <tr>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Job Title</th>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Company</th>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Location</th>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Date Published</th>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Actions</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Job Title</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Company</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Location</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Date Published</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
@@ -212,19 +212,19 @@ const JobsTable = ({ data, deleteData, isLoading, error, mutateState }) => {
                                     <tr key={job._id} className="hover:bg-gray-50 transition-colors">
                                         <td className="py-4 px-6">
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-full flex items-center justify-center text-white font-semibold">
+                                                <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-full flex items-center justify-center text-white font-normal text-xs">
                                                     {job.job_title?.substring(0, 2).toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <p className="font-semibold text-gray-900">{job.job_title}</p>
-                                                    <p className="text-sm text-gray-600">ID: {job._id?.substring(0, 8)}</p>
+                                                    <p className="font-normal text-gray-900 text-sm">{job.job_title}</p>
+                                                    <p className="text-xs text-gray-600">ID: {job._id?.substring(0, 8)}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div className="flex items-center space-x-2">
                                                 <Building className="text-gray-400" size={16} />
-                                                <span className="font-medium text-gray-900">{job.company_name}</span>
+                                                <span className="font-normal text-gray-900 text-sm">{job.company_name}</span>
                                             </div>
                                         </td>
                                         <td className="py-4 px-6">
@@ -266,7 +266,7 @@ const JobsTable = ({ data, deleteData, isLoading, error, mutateState }) => {
                     {filteredJobs.length === 0 && (
                         <div className="text-center py-12">
                             <Briefcase className="mx-auto text-gray-400 mb-4" size={48} />
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No jobs found</h3>
+                            <h3 className="text-base font-normal text-gray-900 mb-2">No jobs found</h3>
                             <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
                         </div>
                     )}
@@ -322,12 +322,12 @@ const JobForm = ({ mutateState, setJobTitle,
         <>
             <div className="flex items-center space-x-5 flex-row mb-6">
                 <ArrowLeft3 onClick={() => mutateState(1)} size="32" color="#000000" className="cursor-pointer hover:opacity-70 transition-opacity" />
-                <h1 className="text-2xl font-bold text-gray-900">Post New Job</h1>
+                <h1 className="text-lg font-medium text-gray-900">Post New Job</h1>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Job title</label>
+                    <label className="block text-xs font-normal text-gray-700 mb-2">Job title</label>
                     <input 
                         type="text" 
                         value={job_title} 
@@ -337,7 +337,7 @@ const JobForm = ({ mutateState, setJobTitle,
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Job category</label>
+                    <label className="block text-xs font-normal text-gray-700 mb-2">Job category</label>
                     <input 
                         type="text" 
                         value={category} 
@@ -350,7 +350,7 @@ const JobForm = ({ mutateState, setJobTitle,
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">Job type</label>
+                    <label className="block text-xs font-normal text-gray-700 mb-3">Job type</label>
                     <div className="space-y-3">
                         {[{ id: 1, type: "remote" },
                         { id: 2, type: "Full Time" },
@@ -374,7 +374,7 @@ const JobForm = ({ mutateState, setJobTitle,
                 </div>
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Company name</label>
+                        <label className="block text-xs font-normal text-gray-700 mb-2">Company name</label>
                         <input 
                             onChange={(e) => setCompanyName(e.target.value)} 
                             value={company_name} 
@@ -384,7 +384,7 @@ const JobForm = ({ mutateState, setJobTitle,
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                        <label className="block text-xs font-normal text-gray-700 mb-2">Location</label>
                         <input 
                             type="text" 
                             onChange={(e) => setLocation(e.target.value)} 
@@ -478,7 +478,7 @@ const JobForm = ({ mutateState, setJobTitle,
             <div className="flex justify-end mt-8">
                 <button 
                     onClick={() => mutateState(3)} 
-                    className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-3 rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                    className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-2 rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 font-normal shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-sm"
                 >
                     Review Job Posting
                 </button>
@@ -552,7 +552,7 @@ const Review = ({ mutateState,
                     {payment_type && (
                         <div className="text-right">
                             <p className="text-emerald-100 text-sm">Payment Type</p>
-                            <p className="text-xl font-semibold">{payment_type}</p>
+                            <p className="text-lg font-normal">{payment_type}</p>
                         </div>
                     )}
                 </div>
@@ -635,7 +635,7 @@ const Review = ({ mutateState,
                 <button
                     onClick={sendData}
                     disabled={jobPending}
-                    className="flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-3 rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-2 rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 font-normal shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm"
                 >
                     {jobPending ? (
                         <>

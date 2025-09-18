@@ -125,23 +125,23 @@ const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
                 <div className="bg-white rounded-xl shadow-lg p-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                                    <Book1 className="text-white" size={20} />
+                            <h1 className="text-2xl font-medium text-gray-900 flex items-center gap-3">
+                                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                                    <Book1 className="text-white" size={18} />
                                 </div>
                                 Course Management
                             </h1>
-                            <p className="text-gray-600 mt-2">Manage courses and their content</p>
+                            <p className="text-gray-600 mt-2 text-sm">Manage courses and their content</p>
                         </div>
                         
                         <div className="flex flex-col sm:flex-row gap-3">
                             <button 
                                 onClick={() => manipulateState(2)}
-                                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-5 py-2 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 font-normal shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-sm"
                             >
                                 Post New Course
                             </button>
-                            <button className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center gap-2">
+                            <button className="border border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50 transition-colors font-normal flex items-center gap-2 text-sm">
                                 <ExportSquare size={16} />
                                 Export Data
                             </button>
@@ -154,8 +154,8 @@ const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
                     <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Total Courses</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">{courses.length}</p>
+                                <p className="text-gray-600 text-sm font-normal">Total Courses</p>
+                                <p className="text-xl font-medium text-gray-900 mt-1">{courses.length}</p>
                             </div>
                             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                                 <Book1 className="text-blue-600" size={24} />
@@ -166,8 +166,8 @@ const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
                     <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Published</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">{courses.filter(c => c.published).length}</p>
+                                <p className="text-gray-600 text-sm font-normal">Published</p>
+                                <p className="text-xl font-medium text-gray-900 mt-1">{courses.filter(c => c.published).length}</p>
                             </div>
                             <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                                 <Calendar className="text-green-600" size={24} />
@@ -178,8 +178,8 @@ const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
                     <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Beginner Level</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">
+                                <p className="text-gray-600 text-sm font-normal">Beginner Level</p>
+                                <p className="text-xl font-medium text-gray-900 mt-1">
                                     {courses.filter(c => c.about?.level?.toLowerCase() === 'beginner').length}
                                 </p>
                             </div>
@@ -192,8 +192,8 @@ const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
                     <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-gray-600 text-sm font-medium">Avg Rating</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">4.8</p>
+                                <p className="text-gray-600 text-sm font-normal">Avg Rating</p>
+                                <p className="text-xl font-medium text-gray-900 mt-1">4.8</p>
                             </div>
                             <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                                 <Star1 className="text-purple-600" size={24} />
@@ -239,11 +239,11 @@ const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
                         <table className="w-full">
                             <thead className="bg-gray-50 border-b border-gray-200">
                                 <tr>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Course</th>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Level</th>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Date Created</th>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Schedule</th>
-                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Actions</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Course</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Level</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Date Created</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Schedule</th>
+                                    <th className="text-left py-3 px-6 font-normal text-gray-900 text-xs">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200">
@@ -251,27 +251,27 @@ const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
                                     <tr key={course._id} className="hover:bg-gray-50 transition-colors">
                                         <td className="py-4 px-6">
                                             <div className="flex items-center space-x-3">
-                                                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
+                                                <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-normal text-xs">
                                                     {course.title?.substring(0, 2).toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <p className="font-semibold text-gray-900">{course.title}</p>
-                                                    <p className="text-sm text-gray-600">Course ID: {course._id?.substring(0, 8)}</p>
+                                                    <p className="font-normal text-gray-900 text-sm">{course.title}</p>
+                                                    <p className="text-xs text-gray-600">Course ID: {course._id?.substring(0, 8)}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLevelBadge(course.about?.level)}`}>
+                                            <span className={`px-3 py-1 rounded-full text-xs font-normal border ${getLevelBadge(course.about?.level)}`}>
                                                 {course.about?.level || 'Not Set'}
                                             </span>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className="text-gray-900 font-medium">
+                                            <span className="text-gray-900 font-normal text-sm">
                                                 {course.date_posted?.split("T")[0] || 'N/A'}
                                             </span>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <span className="text-gray-600">{course.about?.schedule || 'Flexible'}</span>
+                                            <span className="text-gray-600 text-sm">{course.about?.schedule || 'Flexible'}</span>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div className="flex items-center space-x-2">
@@ -302,7 +302,7 @@ const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
                     {filteredCourses.length === 0 && (
                         <div className="text-center py-12">
                             <Book1 className="mx-auto text-gray-400 mb-4" size={48} />
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No courses found</h3>
+                            <h3 className="text-base font-normal text-gray-900 mb-2">No courses found</h3>
                             <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
                         </div>
                     )}
