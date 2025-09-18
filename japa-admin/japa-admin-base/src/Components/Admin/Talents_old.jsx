@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { 
     Strongbox, 
     ArrowDown2, 
@@ -9,145 +8,59 @@ import {
     Setting2, 
     Bag2, 
     Airdrop,
-    TrendUp,
     SearchNormal1,
     Filter,
     Eye,
     Edit,
     Trash,
-    ExportSquare,
-    Briefcase
+    ExportSquare
 } from "iconsax-react";
-import { fetchStats, fetchUsers } from "../../api calls/api";
-import { People, ProfileTick } from "iconsax-react";
+import { fetchStats, fetchTalents, fetchUsers } from "../../api calls/api";
+import { People } from "iconsax-react";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import TablePagination from '@mui/material/TablePagination';
 import { useState } from "react";
 import { Skeleton, Table, TableCell } from "@mui/material";
 import TableRowsLoader from "../ReUsableTable";
+import { useQuery } from "@tanstack/react-query";
 
-const Home = () => {
-    const [search, setSearch] = useState("");
+const Talents = () => {
     const [page, setPage] = useState("");
     const [limit, setLimit] = useState("");
     const [rowsperPage, setRowsPerPage] = useState(10);
+    const [search, setSearch] = useState("");
 
     const { data, isLoading, error } = useQuery({
-        queryKey: ['getUsers', { limit, page, search }],
-        queryFn: fetchUsers,
+        queryKey: ['talents'],
+        queryFn: fetchTalents,
         staleTime: 10000 * 60 * 60 * 24,
     });
-
-    const { data: stats, isLoading: isLoadingStats, error: errorStats } = useQuery({
-        queryKey: ['stats'],
-        queryFn: fetchStats,
-        staleTime: 10000 * 60 * 60 * 24,
-    });
-
-    const statsCards = [
-        {
-            id: 1,
-            title: "Total Users",
-            value: stats?.data || 0,
-            icon: People,
-            color: "from-blue-500 to-blue-600",
-            bgColor: "bg-blue-50",
-            iconColor: "text-blue-600",
-            trend: "+12%",
-            trendUp: true
-        },
-        {
-            id: 2,
-            title: "Active Jobs",
-            value: stats?.jobs || 0,
-            icon: Briefcase,
-            color: "from-green-500 to-green-600",
-            bgColor: "bg-green-50",
-            iconColor: "text-green-600",
-            trend: "+8%",
-            trendUp: true
-        },
-        {
-            id: 3,
-            title: "Available Courses",
-            value: stats?.courses || 0,
-            icon: Notepad2,
-            color: "from-purple-500 to-purple-600",
-            bgColor: "bg-purple-50",
-            iconColor: "text-purple-600",
-            trend: "+15%",
-            trendUp: true
-        },
-        {
-            id: 4,
-            title: "Total Revenue",
-            value: "$24,500",
-            icon: Strongbox,
-            color: "from-orange-500 to-orange-600",
-            bgColor: "bg-orange-50",
-            iconColor: "text-orange-600",
-            trend: "+23%",
-            trendUp: true
-        }
-    ];
 
     return (
         <div className="p-8 space-y-8">
             {/* Header */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-                    <p className="text-gray-600 mt-2">Welcome back! Here's what's happening with Japa today.</p>
+                    <h1 className="text-3xl font-bold text-gray-900">Coaching Management</h1>
+                    <p className="text-gray-600 mt-2">Manage talents and their coaching preferences</p>
                 </div>
                 <div className="mt-4 lg:mt-0">
                     <button className="bg-gradient-to-r from-[#5922A9] to-[#7B3EC4] text-white px-6 py-3 rounded-xl font-semibold hover:from-[#4A1D96] hover:to-[#6B35B1] transition-all duration-200 shadow-lg flex items-center space-x-2">
                         <ExportSquare size="20" />
-                        <span>Export Report</span>
+                        <span>Export Talents</span>
                     </button>
                 </div>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {statsCards.map((card) => {
-                    const IconComponent = card.icon;
-                    return (
-                        <div key={card.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
-                            <div className="flex items-center justify-between">
-                                <div className={`p-3 rounded-xl ${card.bgColor}`}>
-                                    <IconComponent size="24" className={card.iconColor} />
-                                </div>
-                                <div className={`flex items-center space-x-1 text-sm ${
-                                    card.trendUp ? 'text-green-600' : 'text-red-600'
-                                }`}>
-                                    <TrendUp size="16" className={card.trendUp ? 'rotate-0' : 'rotate-180'} />
-                                    <span className="font-medium">{card.trend}</span>
-                                </div>
-                            </div>
-                            <div className="mt-4">
-                                <h3 className="text-gray-600 text-sm font-medium">{card.title}</h3>
-                                <p className="text-2xl font-bold text-gray-900 mt-1">
-                                    {isLoadingStats ? (
-                                        <div className="animate-pulse bg-gray-200 h-8 w-16 rounded"></div>
-                                    ) : (
-                                        card.value
-                                    )}
-                                </p>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-
-            {/* Users Table Section */}
+            {/* Talents Table Section */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
                 {/* Table Header */}
                 <div className="p-6 border-b border-gray-100">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900">Recent Users</h2>
-                            <p className="text-gray-600 text-sm mt-1">Manage and view user accounts</p>
+                            <h2 className="text-xl font-bold text-gray-900">Talent Directory</h2>
+                            <p className="text-gray-600 text-sm mt-1">View and manage talent profiles and preferences</p>
                         </div>
                         
                         {/* Search and Filters */}
@@ -156,17 +69,9 @@ const Home = () => {
                                 <SearchNormal1 size="20" color="#6B7280" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
                                 <input
                                     type="text"
-                                    placeholder="Search by name"
+                                    placeholder="Search by name or skill"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:border-[#5922A9] focus:ring-4 focus:ring-purple-100 outline-none transition-all duration-200 w-full sm:w-64"
-                                />
-                            </div>
-                            <div className="relative">
-                                <SearchNormal1 size="20" color="#6B7280" className="absolute left-3 top-1/2 transform -translate-y-1/2" />
-                                <input
-                                    type="text"
-                                    placeholder="Search by email"
                                     className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:border-[#5922A9] focus:ring-4 focus:ring-purple-100 outline-none transition-all duration-200 w-full sm:w-64"
                                 />
                             </div>
@@ -183,16 +88,16 @@ const Home = () => {
                         <thead className="bg-gray-50 border-b border-gray-100">
                             <tr>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    User
+                                    Talent
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Email
+                                    Current Skills
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Registration Date
+                                    Course Preference
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Phone
+                                    Status
                                 </th>
                                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Actions
@@ -203,26 +108,50 @@ const Home = () => {
                             {isLoading ? (
                                 <TableRowsLoader rowsNum={10} />
                             ) : (
-                                data?.users?.map((user) => (
-                                    <tr key={user._id} className="hover:bg-gray-50 transition-colors duration-150">
+                                data?.talents?.map((talent) => (
+                                    <tr key={talent._id} className="hover:bg-gray-50 transition-colors duration-150">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center space-x-3">
                                                 <div className="w-10 h-10 bg-gradient-to-r from-[#5922A9] to-[#7B3EC4] rounded-full flex items-center justify-center">
                                                     <span className="text-white font-semibold text-sm">
-                                                        {user.first_name?.charAt(0) || 'U'}
+                                                        {talent.full_name?.charAt(0) || 'T'}
                                                     </span>
                                                 </div>
                                                 <div>
-                                                    <p className="font-semibold text-gray-900">{user.first_name}</p>
-                                                    <p className="text-sm text-gray-500">ID: {user._id.slice(-6)}</p>
+                                                    <p className="font-semibold text-gray-900">{talent.full_name}</p>
+                                                    <p className="text-sm text-gray-500">ID: {talent._id.slice(-6)}</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-900">{user.email}</td>
-                                        <td className="px-6 py-4 text-gray-600">
-                                            {user.registration_date?.split("T")[0]}
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap gap-1">
+                                                {talent.current_skills?.split(',').slice(0, 2).map((skill, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="inline-block px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                                                    >
+                                                        {skill.trim()}
+                                                    </span>
+                                                )) || (
+                                                    <span className="text-gray-500 text-sm">No skills listed</span>
+                                                )}
+                                                {talent.current_skills?.split(',').length > 2 && (
+                                                    <span className="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                                        +{talent.current_skills.split(',').length - 2} more
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-600">{user.phone_number || 'N/A'}</td>
+                                        <td className="px-6 py-4">
+                                            <span className="inline-block px-3 py-1 bg-purple-100 text-purple-800 text-sm rounded-full font-medium">
+                                                {talent.course_of_choice || 'Not specified'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="inline-block px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full font-medium">
+                                                Active
+                                            </span>
+                                        </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center space-x-2">
                                                 <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200">
@@ -258,4 +187,26 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default Talents;
+
+                                </tr>
+                            ))}
+
+                        </tbody>
+
+                    </table>
+                    <TablePagination
+                        component="div"
+                        count={data?.total_pages}
+                        page={data?.current_page}
+                        // onPageChange={handleChangePage}
+                        rowsPerPage={rowsperPage}
+                    // onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                </div>
+            </div>
+        </>
+    )
+
+}
+export default Talents

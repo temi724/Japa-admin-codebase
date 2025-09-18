@@ -9,67 +9,271 @@ import Rating from "@mui/material/Rating";
 import TablePagination from '@mui/material/TablePagination';
 import TableRowsLoader from "../ReUsableTable";
 import { Skeleton, Table, TableCell } from "@mui/material";
-import { ArrowLeft3, Trash } from "iconsax-react";
+import { 
+    ArrowLeft3, 
+    Trash, 
+    Briefcase, 
+    Building, 
+    Calendar, 
+    Location, 
+    Star1, 
+    SearchNormal1, 
+    Filter, 
+    More, 
+    Eye,
+    Edit,
+    ExportSquare,
+    InfoCircle
+} from "iconsax-react";
 import { FourSquare } from "react-loading-indicators";
 
 
 
 const JobsTable = ({ data, deleteData, isLoading, error, mutateState }) => {
-    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterLocation, setFilterLocation] = useState('all');
+
+    const jobs = data?.jobs || [];
+    
+    // Filter jobs based on search and location
+    const filteredJobs = jobs.filter(job => {
+        const matchesSearch = job.job_title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            job.company_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            job.location?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesLocation = filterLocation === 'all' || job.location?.toLowerCase().includes(filterLocation.toLowerCase());
+        return matchesSearch && matchesLocation;
+    });
+
+    const getJobTypeBadge = (location) => {
+        if (location?.toLowerCase().includes('remote')) return 'bg-green-100 text-green-800 border-green-200';
+        if (location?.toLowerCase().includes('hybrid')) return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        if (location?.toLowerCase().includes('onsite')) return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 p-8">
+                <div className="max-w-7xl mx-auto">
+                    <div className="bg-white rounded-xl shadow-lg p-8">
+                        <div className="animate-pulse space-y-4">
+                            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                            <div className="space-y-3">
+                                {[...Array(5)].map((_, i) => (
+                                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <>
-            <div className="flex flex-row justify-between p-5 mx-5">
-                <h1 className="">Jobs</h1>
-                <div className="bg-purple-900 h-10 w-40 flex items-center justify-center rounded-3xl " onClick={() => mutateState(2)}>
-                    <p className="text-white text-sm">Post New Job</p>
+        <div className="min-h-screen bg-gray-50 p-8">
+            <div className="max-w-7xl mx-auto space-y-8">
+                {/* Header */}
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+                                    <Briefcase className="text-white" size={20} />
+                                </div>
+                                Job Management
+                            </h1>
+                            <p className="text-gray-600 mt-2">Manage job postings and applications</p>
+                        </div>
+                        
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <button 
+                                onClick={() => mutateState(2)}
+                                className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-6 py-2 rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                            >
+                                Post New Job
+                            </button>
+                            <button className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center gap-2">
+                                <ExportSquare size={16} />
+                                Export Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-600 text-sm font-medium">Total Jobs</p>
+                                <p className="text-3xl font-bold text-gray-900 mt-1">{jobs.length}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <Briefcase className="text-emerald-600" size={24} />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-600 text-sm font-medium">Companies</p>
+                                <p className="text-3xl font-bold text-gray-900 mt-1">
+                                    {new Set(jobs.map(job => job.company_name)).size}
+                                </p>
+                            </div>
+                            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <Building className="text-blue-600" size={24} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-600 text-sm font-medium">Remote Jobs</p>
+                                <p className="text-3xl font-bold text-gray-900 mt-1">
+                                    {jobs.filter(job => job.location?.toLowerCase().includes('remote')).length}
+                                </p>
+                            </div>
+                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <Location className="text-green-600" size={24} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-600 text-sm font-medium">This Month</p>
+                                <p className="text-3xl font-bold text-gray-900 mt-1">
+                                    {jobs.filter(job => {
+                                        const jobDate = new Date(job.date_posted);
+                                        const now = new Date();
+                                        return jobDate.getMonth() === now.getMonth() && jobDate.getFullYear() === now.getFullYear();
+                                    }).length}
+                                </p>
+                            </div>
+                            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <Calendar className="text-purple-600" size={24} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Search and Filter */}
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex-1 relative">
+                            <SearchNormal1 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                            <input
+                                type="text"
+                                placeholder="Search jobs by title, company, or location..."
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        
+                        <div className="relative">
+                            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                            <select 
+                                className="pl-10 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none appearance-none bg-white min-w-40"
+                                value={filterLocation}
+                                onChange={(e) => setFilterLocation(e.target.value)}
+                            >
+                                <option value="all">All Locations</option>
+                                <option value="remote">Remote</option>
+                                <option value="hybrid">Hybrid</option>
+                                <option value="onsite">On-site</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Jobs Table */}
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead className="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Job Title</th>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Company</th>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Location</th>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Date Published</th>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {filteredJobs.map((job) => (
+                                    <tr key={job._id} className="hover:bg-gray-50 transition-colors">
+                                        <td className="py-4 px-6">
+                                            <div className="flex items-center space-x-3">
+                                                <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-full flex items-center justify-center text-white font-semibold">
+                                                    {job.job_title?.substring(0, 2).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-gray-900">{job.job_title}</p>
+                                                    <p className="text-sm text-gray-600">ID: {job._id?.substring(0, 8)}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <div className="flex items-center space-x-2">
+                                                <Building className="text-gray-400" size={16} />
+                                                <span className="font-medium text-gray-900">{job.company_name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getJobTypeBadge(job.location)}`}>
+                                                {job.location || 'Not specified'}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <span className="text-gray-900 font-medium">
+                                                {job.date_posted?.split("T")[0] || 'N/A'}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <div className="flex items-center space-x-2">
+                                                <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View">
+                                                    <Eye size={16} />
+                                                </button>
+                                                <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="Edit">
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button 
+                                                    onClick={() => deleteData(job._id)} 
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
+                                                    title="Delete"
+                                                >
+                                                    <Trash size={16} />
+                                                </button>
+                                                <button className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" title="More">
+                                                    <More size={16} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {filteredJobs.length === 0 && (
+                        <div className="text-center py-12">
+                            <Briefcase className="mx-auto text-gray-400 mb-4" size={48} />
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No jobs found</h3>
+                            <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+                        </div>
+                    )}
                 </div>
             </div>
-            <div className="flex flex-col mx-5 p-5">
-                <div className="flex flex-row space-x-2">
-                    <input type="text" className="p-2 border-2 h-10 w-[200px] rounded-md" placeholder="title" />
-                    {/* <input type="text" className="border-2 p-2 h-10 w-[200px] rounded-md" placeholder="email" /> */}
-                </div>
-                <table className="table my-6  w-full  bg-white rounded-md text-sm text-left">
-                    <thead className="text-xs text-white uppercase bg-purple-900">
-                        <tr>
-                            <th scope="col" class="px-6 py-4">Title</th>
-                            <th scope="col" class="px-6 py-4">Company</th>
-                            <th scope="col" class="px-6 py-4">Category</th>
-                            <th scope="col" class="px-6 py-4">Date published</th>
-                            <th scope="col" class="px-6 py-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-                        {isLoading ? <TableRowsLoader rowsNum={10} /> : ""}
-                        {data?.jobs.map((x) => (
-                            <tr className="font-light text-sm" key={x._id}>
-                                <td className="px-5 py-4 ">{x.job_title}</td>
-                                <td className="px-5 py-4 ">{x.company_name}</td>
-                                <td className="px-5 py-4 ">{x.location}</td>
-                                <td className="px-5 py-4">{x.date_posted?.split("T")[0]}</td>
-                                {/* <td className="px-5 py-4">{x.about.schedule}</td> */}
-                                <td>
-                                    <div className="flex flex-row cusor-pointer">
-                                        <div>
-                                            <Trash onClick={() => deleteData(x._id)} size="22" color="#FF8A65" />
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <TablePagination
-                    component="div"
-                    count={Number(data?.total_pages)}
-                    page={Number(data?.current_page)}
-                    // onPageChange={handleChangePage}
-                    rowsPerPage={rowsPerPage}
-                // onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </div>
-        </>
-    )
+        </div>
+    );
 }
 
 const JobForm = ({ mutateState, setJobTitle,
@@ -116,118 +320,168 @@ const JobForm = ({ mutateState, setJobTitle,
     console.log("holle", job_type, job_title, category)
     return (
         <>
-            <div className="flex items-center  space-x-5 flex-row">
-                <ArrowLeft3 onClick={() => mutateState(1)} size="32" color="#000000" />
-                <h1>Post New Job</h1>
+            <div className="flex items-center space-x-5 flex-row mb-6">
+                <ArrowLeft3 onClick={() => mutateState(1)} size="32" color="#000000" className="cursor-pointer hover:opacity-70 transition-opacity" />
+                <h1 className="text-2xl font-bold text-gray-900">Post New Job</h1>
             </div>
 
-            <div className="flex flex-row space-x-10  mt-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div>
-                    <label className="font-light">Job title</label> <br />
-                    <input type="text" value={job_title} onChange={(e) => setJobTitle(e.target.value)} className="h-[50px] p-2 rounded-md w-[478px] border-2" />
-                </div>
-                <div>
-                    <label className="font-light">Job category</label> <br />
-                    <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} className="h-[50px] p-2 rounded-md w-[478px] border-2" />
-                    {/* <Select isMulti options={options}
-                        className="h-[53px] w-[478px] " /> */}
-                </div>
-            </div>
-            <div className="flex flex-row space-x-10  mt-5">
-                <div>
-                    <label className="font-light">Job type</label> <br />
-                    {[{ id: 1, type: "remote" },
-                    { id: 2, type: "Full Time" },
-                    { id: 3, type: "Part Time" },
-                    { id: 4, type: "Intern" },
-                    { id: 5, type: "Volunteer" },
-                    { id: 6, type: "others" }].map((x) => (
-                        <div className="flex space-x-2 w-[478px]">
-                            <input onChange={(e) => setJobType(e.target.value)} checked={job_type == x.type} className="w-6 border-purple-950  text-purple-500 focus:ring-purple-500 mt-5 h-6"
-                                type="radio" value={x.type} name="job" />
-                            <label className="mt-5">{x.type}</label><br /></div>
-                    ))}
-                </div>
-                <div className="flex flex-col">
-                    <label className="font-light"></label> <br />
-                    <input onChange={(e) => setCompanyName(e.target.value)} value={company_name} type="text" className="h-[50px] rounded-md w-[478px] p-2 border-2" placeholder="company name" />
-                    <input onChange={(e) => setTechnology(e.target.value)} value={technology} type="text" className="h-[50px] mt-5 rounded-md w-[478px] p-2 border-2" placeholder="Technology (please use '.' after a point)" />
-                    <input type="text" onChange={(e) => setLocation(e.target.value)} value={location} className="h-[50px] mt-7 rounded-md w-[478px] p-2 border-2" placeholder="Location" />
-                    <input type="text" onChange={(e) => setCity(e.target.value)} value={city} className="h-[50px] mt-7 rounded-md w-[478px] p-2 border-2" placeholder="city" />
-                </div>
-            </div>
-            <div className="flex space-x-10 flex-row mt-5">
-                <div>
-                    <label className="font-light">Payment Type</label> <br />
-                    <input onChange={(e) => setPaymentType(e.target.value)} value={payment_type} type="text" className="h-[50px] mt-5 rounded-md w-[478px] p-2 border-2" placeholder="Payment Type" />
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Job title</label>
+                    <input 
+                        type="text" 
+                        value={job_title} 
+                        onChange={(e) => setJobTitle(e.target.value)} 
+                        className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                        placeholder="Enter job title"
+                    />
                 </div>
                 <div>
-                    <label className="font-light">Experience</label> <br />
-                    <input onChange={(e) => setExperience(e.target.value)} value={experience} type="text" className="h-[50px] mt-5 rounded-md w-[478px] p-2 border-2 " placeholder="1-2 years" />
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Job category</label>
+                    <input 
+                        type="text" 
+                        value={category} 
+                        onChange={(e) => setCategory(e.target.value)} 
+                        className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"
+                        placeholder="Enter job category"
+                    />
                 </div>
-            </div>
-            <div className="flex space-x-10 flex-row mt-5">
-                <div>
-                    <label className="font-light">Minimum</label> <br />
-                    <input type="text" onChange={(e) => setMinSalary(e.target.value)} value={min_salary} className="h-[50px] mt-5 rounded-md w-[478px] p-2 border-2" placeholder="Minimum" />
-                </div>
-                <div>
-                    <label className="font-light">Maximun</label> <br />
-                    <input onChange={(e) => setMaxSalary(e.target.value)} value={max_salary} type="text" className="h-[50px] mt-5 rounded-md w-[478px] p-2 border-2" placeholder="Maximum" />
-                </div>
-            </div>
-            <div className="flex space-x-10 flex-row mt-5">
-                <div>
-                    <label className="font-light">What you will be doing</label>
-                    <p className="text-xs text-gray-500 font-light"></p>
-                    <br />
-                    <textarea type="text" onChange={(e) => setWhatYouWillBeDoing(e.target.value)} value={what_you_will_be_doing} className="h-[100px]  mt-3 rounded-md w-[478px] p-2 border-2" placeholder="What you will be doing" />
-                </div>
-                <div>
-                    <label className="font-light">Nice To Have</label>
-                    <p className="text-xs text-gray-500 font-light"> <br />
-                        seeking in a candidate. <span className="text-red-400"> use "." after a point</span> </p>
-                    <br />
-                    <textarea type="text" onChange={(e) => setNiceToHave(e.target.value)} value={nice_to_have} className="h-[100px]   rounded-md w-[478px] p-2 border-2" placeholder="Nice to have" />
-                </div>
-            </div>
-            <div className="flex space-x-10 flex-row mt-5">
-                <div>
-                    <label className="font-light">About job</label>
-                    <p className="text-xs text-gray-500 font-light">Provide a brief summary of the job responsibilities and requirements</p>
-                    <br />
-                    <textarea type="text" onChange={(e) => setAbout(e.target.value)} value={about} className="h-[100px]  mt-3 rounded-md w-[478px] p-2 border-2" placeholder="About" />
-                </div>
-                <div>
-                    <label className="font-light">What we are looking for</label>
-                    <p className="text-xs text-gray-500 font-light">Indicate key qualities, knowldge and expertise that you are <br />
-                        seeking in a candidate. <span className="text-red-400"> use "." after a point</span> </p>
-                    <br />
-                    <textarea type="text" onChange={(e) => setWhatWeAreLookingFor(e.target.value)} value={what_we_are_lookin_for} className="h-[100px]   rounded-md w-[478px] p-2 border-2" placeholder="What we are looking for" />
-                </div>
-            </div>
-            <div className="flex space-x-10 flex-row mt-5">
-                <div>
-                    <label className="font-light">Preferred candidate data</label>
-                    <p className="text-xs text-gray-500 font-light">List any preferred qualifications, skills, or experience that would be <br /> beneficial for the candidate to have<span className="text-red-400"> use "." after a point</span> </p>
-                    <br />
-                    <textarea onChange={(e) => setIdealCandidate(e.target.value)} value={ideal_candidate} type="text" className="h-[100px]  mt-3 rounded-md w-[478px] p-2 border-2" placeholder="Prefared candidate data" />
-                </div>
-                <div>
-                    <label className="font-light">Skills</label>
-                    <p className="text-xs text-gray-500 font-light">List the technical skills, software knowledge, and other abilities <br />required for this role.<span className="text-red-400"> use "." after a point</span>
-                    </p>
-                    <br />
-                    <textarea onChange={(e) => setSkills(e.target.value)} value={skills} type="text" className="h-[100px]   rounded-md w-[478px] p-2 border-2" placeholder="Skills" />
-                </div>
-            </div >
-            <div>
-                <label className="font-light mt-5">Link</label> <br />
-                <input onChange={(e) => setLink(e.target.value)} value={link} type="text" className="h-[50px] mt-5 rounded-md w-[478px] p-2 border-2" placeholder="Link" />
             </div>
 
-            <div onClick={() => mutateState(3)} className="h-10 w-40 mt-5 flex justify-center items-center   bg-purple-800">
-                <p className="text-white">Review now</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">Job type</label>
+                    <div className="space-y-3">
+                        {[{ id: 1, type: "remote" },
+                        { id: 2, type: "Full Time" },
+                        { id: 3, type: "Part Time" },
+                        { id: 4, type: "Intern" },
+                        { id: 5, type: "Volunteer" },
+                        { id: 6, type: "others" }].map((x) => (
+                            <div key={x.id} className="flex items-center space-x-3">
+                                <input 
+                                    onChange={(e) => setJobType(e.target.value)} 
+                                    checked={job_type === x.type} 
+                                    className="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500"
+                                    type="radio" 
+                                    value={x.type} 
+                                    name="job" 
+                                />
+                                <label className="text-sm font-medium text-gray-700">{x.type}</label>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Company name</label>
+                        <input 
+                            onChange={(e) => setCompanyName(e.target.value)} 
+                            value={company_name} 
+                            type="text" 
+                            className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all" 
+                            placeholder="Company name" 
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Location</label>
+                        <input 
+                            type="text" 
+                            onChange={(e) => setLocation(e.target.value)} 
+                            value={location} 
+                            className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all" 
+                            placeholder="Location" 
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
+                        <input 
+                            type="text" 
+                            onChange={(e) => setCity(e.target.value)} 
+                            value={city} 
+                            className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all" 
+                            placeholder="City" 
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Payment Type</label>
+                    <input 
+                        onChange={(e) => setPaymentType(e.target.value)} 
+                        value={payment_type} 
+                        type="text" 
+                        className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all" 
+                        placeholder="Payment Type" 
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Experience</label>
+                    <input 
+                        onChange={(e) => setExperience(e.target.value)} 
+                        value={experience} 
+                        type="text" 
+                        className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all" 
+                        placeholder="1-2 years" 
+                    />
+                </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">What you will be doing</label>
+                    <p className="text-xs text-gray-500 mb-3">Describe the main responsibilities and tasks for this role</p>
+                    <textarea 
+                        onChange={(e) => setWhatYouWillBeDoing(e.target.value)} 
+                        value={what_you_will_be_doing} 
+                        className="w-full h-32 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all resize-none" 
+                        placeholder="What you will be doing"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">About job</label>
+                    <p className="text-xs text-gray-500 mb-3">Provide a brief summary of the job responsibilities and requirements</p>
+                    <textarea 
+                        onChange={(e) => setAbout(e.target.value)} 
+                        value={about} 
+                        className="w-full h-32 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all resize-none" 
+                        placeholder="About this job"
+                    />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">What we are looking for</label>
+                    <p className="text-xs text-gray-500 mb-3">Indicate key qualities, knowledge and expertise <span className="text-red-500">use "." after each point</span></p>
+                    <textarea 
+                        onChange={(e) => setWhatWeAreLookingFor(e.target.value)} 
+                        value={what_we_are_lookin_for} 
+                        className="w-full h-32 px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all resize-none" 
+                        placeholder="What we are looking for"
+                    />
+                </div>
+                <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Application Link</label>
+                    <p className="text-xs text-gray-500 mb-3">Provide the application or external job posting link</p>
+                    <input 
+                        onChange={(e) => setLink(e.target.value)} 
+                        value={link} 
+                        type="url" 
+                        className="w-full h-12 px-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all" 
+                        placeholder="https://example.com/apply"
+                    />
+                </div>
+            </div>
+
+            <div className="flex justify-end mt-8">
+                <button 
+                    onClick={() => mutateState(3)} 
+                    className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-3 rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                >
+                    Review Job Posting
+                </button>
             </div>
         </>
     )
@@ -256,65 +510,148 @@ const Review = ({ mutateState,
     jobPending
 }) => {
     return (
-        <>
-            <div className="mx-5 p-5">
-                <div className="flex items-center  space-x-5 flex-row">
-                    <ArrowLeft3 onClick={() => mutateState(2)} size="32" color="#000000" />
-                    <h1>Preview job Posting</h1>
-                </div>
+        <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center space-x-4 mb-8">
+                <ArrowLeft3 
+                    onClick={() => mutateState(2)} 
+                    size="32" 
+                    color="#000000" 
+                    className="cursor-pointer hover:opacity-70 transition-opacity" 
+                />
+                <h1 className="text-2xl font-bold text-gray-900">Preview Job Posting</h1>
+            </div>
 
-                <div className="h-[252px] w-[997px] flex items-center bg-purple-200 mt-5">
-                    <div className="px-10">
-                        <h1 className="text-2xl font-extrabold ">{job_title}</h1>
-                        <p>{location + "," + city}</p>
+            {/* Job Header Card */}
+            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl p-8 mb-8 text-white shadow-lg">
+                <div className="flex items-start justify-between">
+                    <div>
+                        <h1 className="text-3xl font-bold mb-2">{job_title}</h1>
+                        <div className="flex items-center space-x-4 text-emerald-100">
+                            <div className="flex items-center space-x-2">
+                                <Building size={18} />
+                                <span>{company_name}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Location size={18} />
+                                <span>{location}, {city}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Briefcase size={18} />
+                                <span>{job_type}</span>
+                            </div>
+                        </div>
+                        {experience && (
+                            <div className="mt-3">
+                                <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+                                    {experience} experience
+                                </span>
+                            </div>
+                        )}
                     </div>
+                    {payment_type && (
+                        <div className="text-right">
+                            <p className="text-emerald-100 text-sm">Payment Type</p>
+                            <p className="text-xl font-semibold">{payment_type}</p>
+                        </div>
+                    )}
                 </div>
-                <div className="  mt-5 w-[790px]">
-                    <h1 className="font-extrabold">About job</h1>
-                    <p className="text-sm font-light">{about}</p>
+            </div>
 
-                </div>
-                <div className="  mt-5 w-[790px]">
-                    <h1 className="font-extrabold">What you will be doing</h1>
-                    {what_you_will_be_doing.split(".").map((x, index) => (
-                        <p className="text-sm font-light leading-6" key={index}>{x}</p>
-                    ))}
+            {/* Content Cards */}
+            <div className="space-y-6">
+                {about && (
+                    <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                            <InfoCircle size={24} className="text-emerald-600" />
+                            <span>About This Job</span>
+                        </h2>
+                        <p className="text-gray-700 leading-relaxed">{about}</p>
+                    </div>
+                )}
 
+                {what_you_will_be_doing && (
+                    <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                            <Star1 size={24} className="text-emerald-600" />
+                            <span>What You Will Be Doing</span>
+                        </h2>
+                        <ul className="space-y-2">
+                            {what_you_will_be_doing.split(".").filter(item => item.trim()).map((item, index) => (
+                                <li key={index} className="flex items-start space-x-3">
+                                    <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span className="text-gray-700 leading-relaxed">{item.trim()}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
-                </div>
-                <div className="  mt-5 w-[790px]">
-                    <h1 className="font-extrabold">What we are looing for</h1>
-                    {what_we_are_lookin_for.split(".").map((x, index) => (
-                        <p className="text-sm font-light leading-6" key={index}>{x}</p>
-                    ))}
-                </div>
-                <div className="  mt-5 w-[790px]">
-                    <h1 className="font-extrabold">Nice to have</h1>
-                    {nice_to_have.split(".").map((x, index) => (
-                        <p className="text-sm font-light leading-6" key={index}>{x}</p>
-                    ))}
+                {what_we_are_lookin_for && (
+                    <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                            <SearchNormal1 size={24} className="text-emerald-600" />
+                            <span>What We Are Looking For</span>
+                        </h2>
+                        <ul className="space-y-2">
+                            {what_we_are_lookin_for.split(".").filter(item => item.trim()).map((item, index) => (
+                                <li key={index} className="flex items-start space-x-3">
+                                    <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0"></div>
+                                    <span className="text-gray-700 leading-relaxed">{item.trim()}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
 
+                {link && (
+                    <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                            <ExportSquare size={24} className="text-emerald-600" />
+                            <span>Application Link</span>
+                        </h2>
+                        <a 
+                            href={link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-emerald-600 hover:text-emerald-700 underline break-all"
+                        >
+                            {link}
+                        </a>
+                    </div>
+                )}
+            </div>
 
-                </div>
-                <div className="  mt-5 w-[790px]">
-                    <h1 className="font-extrabold">Prefared candidate data</h1>
-                    {ideal_candidate.split(".").map((x, index) => (
-                        <p className="text-sm font-light leading-6" key={index}>{x}</p>
-                    ))}
-                </div>
-                <div className="  mt-5 w-[790px]">
-                    <h1 className="font-extrabold">Skills</h1>
-                    {skills.split(".").map((x, index) => (
-                        <p className="text-sm font-light leading-6" key={index}>{x}</p>
-                    ))}
-                </div>
-
-                <div onClick={sendData} className="h-10 p-2  flex-row mx-2 flex cursor-pointer items-center text-white justify-center rounded-3xl w-40 bg-purple-800">
-                    <p>submit</p>
-                    {jobPending ? <FourSquare color="#ffffff" size="small" text="" textColor="" /> : ""}
-                </div>
-            </div></>
-    )
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+                <button
+                    onClick={() => mutateState(2)}
+                    className="flex items-center space-x-2 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                    <ArrowLeft3 size={20} />
+                    <span>Back to Edit</span>
+                </button>
+                
+                <button
+                    onClick={sendData}
+                    disabled={jobPending}
+                    className="flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-3 rounded-lg hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 font-semibold shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                    {jobPending ? (
+                        <>
+                            <FourSquare color="#ffffff" size="small" text="" textColor="" />
+                            <span>Publishing...</span>
+                        </>
+                    ) : (
+                        <>
+                            <ExportSquare size={20} />
+                            <span>Publish Job</span>
+                        </>
+                    )}
+                </button>
+            </div>
+        </div>
+    );
 }
 
 
@@ -374,42 +711,35 @@ const PostJobs = () => {
         mutationFn: postJobs,
         onSuccess: () => {
             queryClient.invalidateQueries(['jobs', 'stats'])
-            toast.success("saved")
+            toast.success("Job posted successfully!")
             mutateState(1)
+        },
+        onError: (error) => {
+            console.log("Error posting job:", error)
+            toast.error("Error: Job not posted. Please try again.")
         }
     })
-    const tech = technology.split(".")
-    const techArray = tech.map(str => str.trim()).filter(str => str.length > 0);
-
-
     const sendData = async () => {
-
         const data = {
             job_title,
             location: location + "," + city,
             job_type,
             company_name,
-            min_salary,
-            max_salary,
             experience,
-            technology: techArray,
-            nice_to_have,
             what_we_are_lookin_for,
             what_you_will_be_doing,
             category,
-            ideal_candidate,
             limit,
             payment_type,
-            skills,
             about,
             link
         }
         try {
             await postjob(data)
         } catch (ex) {
-            console.log(error)
+            console.error("Error posting job:", ex)
+            // Error handling is done in the mutation's onError callback
         }
-
     }
 
     const deleteData = async (_id) => {
@@ -494,7 +824,7 @@ const PostJobs = () => {
 
     return (
         <>
-            <div className="mx-20 mr-5 mt-5 p-5 bg-white">
+            <div className="p-8 space-y-8 bg-white">
                 {ShowThis()}
             </div>
         </>

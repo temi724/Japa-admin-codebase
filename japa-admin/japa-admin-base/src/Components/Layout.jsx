@@ -3,23 +3,34 @@ import TopNav from "./Admin/TopNav";
 import SideBar from "./Admin/SideBar";
 
 let tokks = sessionStorage.getItem("tokken")?.toString("");
+
 const Layout = () => {
   const auth = { tokken: tokks };
   const moveTo = useNavigate();
+
   return auth.tokken ? (
-    <div className="">
+    <div className="bg-gray-50 min-h-screen">
       {/* Sidebar */}
-      <div className="col-start-1 overflow-auto sm:overflow-y-hidden absolute">
-        <SideBar className="fixed" />
+      <div className="fixed inset-y-0 left-0 z-50">
+        <SideBar />
       </div>
-      {/* Top */}
-      <div className=" lg:ml-[240px] overflow-auto  h-[100vh]  sm:col-start-1 lg:col-span-2 bg-gray-100 ">
-        <TopNav className="" />
-        <Outlet />
+      
+      {/* Main Content */}
+      <div className="ml-[280px] flex flex-col h-screen">
+        {/* Top Navigation */}
+        <TopNav />
+        
+        {/* Page Content */}
+        <main className="flex-1 overflow-auto bg-gray-50">
+          <div className="h-full">
+            <Outlet />
+          </div>
+        </main>
       </div>
     </div>
   ) : (
     <Navigate to="/" />
   );
 };
+
 export default Layout;

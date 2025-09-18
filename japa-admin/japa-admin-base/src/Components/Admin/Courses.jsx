@@ -7,7 +7,21 @@ import Rating from "@mui/material/Rating";
 import TablePagination from '@mui/material/TablePagination';
 import { useState } from "react"
 import { Skeleton, Table, TableCell } from "@mui/material";
-import { ArrowLeft3, Trash, InfoCircle } from "iconsax-react";
+import { 
+    ArrowLeft3, 
+    Trash, 
+    InfoCircle, 
+    Book1, 
+    Calendar, 
+    Clock, 
+    Star1, 
+    SearchNormal1, 
+    Filter, 
+    More, 
+    Eye,
+    Edit,
+    ExportSquare
+} from "iconsax-react";
 import { toast } from "react-toastify";
 import { FourSquare } from "react-loading-indicators";
 import TableRowsLoader from "../ReUsableTable";
@@ -57,70 +71,256 @@ const style = {
 // }
 
 const CourseTable = ({ data, isLoading, error, manipulateState, remove }) => {
-    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterLevel, setFilterLevel] = useState('all');
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const courses = data?.courses || [];
+    
+    // Filter courses based on search and level
+    const filteredCourses = courses.filter(course => {
+        const matchesSearch = course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            course.about?.level?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesLevel = filterLevel === 'all' || course.about?.level?.toLowerCase() === filterLevel;
+        return matchesSearch && matchesLevel;
+    });
+
+    const getLevelBadge = (level) => {
+        const levelColors = {
+            'beginner': 'bg-green-100 text-green-800 border-green-200',
+            'intermediate': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+            'advanced': 'bg-red-100 text-red-800 border-red-200',
+            'expert': 'bg-purple-100 text-purple-800 border-purple-200'
+        };
+        return levelColors[level?.toLowerCase()] || 'bg-gray-100 text-gray-800 border-gray-200';
+    };
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-gray-50 p-8">
+                <div className="max-w-7xl mx-auto">
+                    <div className="bg-white rounded-xl shadow-lg p-8">
+                        <div className="animate-pulse space-y-4">
+                            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                            <div className="space-y-3">
+                                {[...Array(5)].map((_, i) => (
+                                    <div key={i} className="h-16 bg-gray-200 rounded"></div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
+        <div className="min-h-screen bg-gray-50 p-8">
+            <div className="max-w-7xl mx-auto space-y-8">
+                {/* Header */}
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                                    <Book1 className="text-white" size={20} />
+                                </div>
+                                Course Management
+                            </h1>
+                            <p className="text-gray-600 mt-2">Manage courses and their content</p>
+                        </div>
+                        
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <button 
+                                onClick={() => manipulateState(2)}
+                                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                            >
+                                Post New Course
+                            </button>
+                            <button className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center gap-2">
+                                <ExportSquare size={16} />
+                                Export Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-        <>
-            <div className="flex flex-row justify-between p-5 mx-5">
-                <h1 className="">Courses</h1>
-                <div className="bg-purple-900 h-10 w-40 flex items-center justify-center rounded-3xl " onClick={() => manipulateState(2)}>
-                    <p className="text-white text-sm">Post New Course</p>
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-600 text-sm font-medium">Total Courses</p>
+                                <p className="text-3xl font-bold text-gray-900 mt-1">{courses.length}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <Book1 className="text-blue-600" size={24} />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-600 text-sm font-medium">Published</p>
+                                <p className="text-3xl font-bold text-gray-900 mt-1">{courses.filter(c => c.published).length}</p>
+                            </div>
+                            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <Calendar className="text-green-600" size={24} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-600 text-sm font-medium">Beginner Level</p>
+                                <p className="text-3xl font-bold text-gray-900 mt-1">
+                                    {courses.filter(c => c.about?.level?.toLowerCase() === 'beginner').length}
+                                </p>
+                            </div>
+                            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <Clock className="text-yellow-600" size={24} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-gray-600 text-sm font-medium">Avg Rating</p>
+                                <p className="text-3xl font-bold text-gray-900 mt-1">4.8</p>
+                            </div>
+                            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <Star1 className="text-purple-600" size={24} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Search and Filter */}
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="flex flex-col md:flex-row gap-4">
+                        <div className="flex-1 relative">
+                            <SearchNormal1 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                            <input
+                                type="text"
+                                placeholder="Search courses by title or level..."
+                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        
+                        <div className="relative">
+                            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                            <select 
+                                className="pl-10 pr-8 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none appearance-none bg-white min-w-40"
+                                value={filterLevel}
+                                onChange={(e) => setFilterLevel(e.target.value)}
+                            >
+                                <option value="all">All Levels</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Courses Table */}
+                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead className="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Course</th>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Level</th>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Date Created</th>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Schedule</th>
+                                    <th className="text-left py-4 px-6 font-semibold text-gray-900 text-sm">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {filteredCourses.map((course) => (
+                                    <tr key={course._id} className="hover:bg-gray-50 transition-colors">
+                                        <td className="py-4 px-6">
+                                            <div className="flex items-center space-x-3">
+                                                <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
+                                                    {course.title?.substring(0, 2).toUpperCase()}
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-gray-900">{course.title}</p>
+                                                    <p className="text-sm text-gray-600">Course ID: {course._id?.substring(0, 8)}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getLevelBadge(course.about?.level)}`}>
+                                                {course.about?.level || 'Not Set'}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <span className="text-gray-900 font-medium">
+                                                {course.date_posted?.split("T")[0] || 'N/A'}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <span className="text-gray-600">{course.about?.schedule || 'Flexible'}</span>
+                                        </td>
+                                        <td className="py-4 px-6">
+                                            <div className="flex items-center space-x-2">
+                                                <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View">
+                                                    <Eye size={16} />
+                                                </button>
+                                                <button className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="Edit">
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button 
+                                                    onClick={() => remove(course._id)} 
+                                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
+                                                    title="Delete"
+                                                >
+                                                    <Trash size={16} />
+                                                </button>
+                                                <button className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors" title="More">
+                                                    <More size={16} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {filteredCourses.length === 0 && (
+                        <div className="text-center py-12">
+                            <Book1 className="mx-auto text-gray-400 mb-4" size={48} />
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No courses found</h3>
+                            <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+                        </div>
+                    )}
+
+                    {/* Pagination */}
+                    <div className="px-6 py-4 border-t border-gray-100">
+                        <TablePagination
+                            component="div"
+                            count={Number(data?.total_pages) || 0}
+                            page={Number(data?.current_page) || 0}
+                            rowsPerPage={rowsPerPage}
+                            className="text-gray-600"
+                        />
+                    </div>
                 </div>
             </div>
-            {/* <BasicModal open={open} handleClose={handleClose} handleOpen={handleOpen} /> */}
-
-            <div className="flex flex-col mx-5 p-5">
-                <div className="flex flex-row space-x-2">
-                    <input type="text" className="p-2 border-2 h-10 w-[200px] rounded-md" placeholder="title" />
-                    {/* <input type="text" className="border-2 p-2 h-10 w-[200px] rounded-md" placeholder="email" /> */}
-                </div>
-
-                <table className="table my-6  w-full  bg-white rounded-md text-sm text-left">
-                    <thead className="text-xs text-white uppercase bg-purple-900">
-                        <tr>
-                            <th scope="col" class="px-6 py-4">Title</th>
-                            <th scope="col" class="px-6 py-4">Level</th>
-                            <th scope="col" class="px-6 py-4">Date Registered</th>
-                            <th scope="col" class="px-6 py-4">Schedule</th>
-                            <th scope="col" class="px-6 py-4">Actions</th>
-
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-                        {isLoading ? <TableRowsLoader rowsNum={10} /> : ""}
-                        {data?.courses.map((x) => (
-                            <tr className="font-light text-sm" key={x._id}>
-                                <td className="px-5 py-4 ">{x.title}</td>
-                                <td className="px-5 py-4 ">{x.about.level}</td>
-                                <td className="px-5 py-4">{x.date_posted?.split("T")[0]}</td>
-                                <td className="px-5 py-4">{x.about.schedule}</td>
-                                <td>
-                                    <div className="flex flex-row cusor-pointer">
-                                        <div>
-                                            <Trash onClick={() => remove(x._id)} size="22" color="#FF8A65" />
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-
-                    </tbody>
-
-                </table>
-                <TablePagination
-                    component="div"
-                    count={Number(data?.total_pages)}
-                    page={Number(data?.current_page)}
-                    // onPageChange={handleChangePage}
-                    rowsPerPage={rowsPerPage}
-                // onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </div>
-        </>
-    )
+        </div>
+    );
 }
 const Review = ({ manipulateState, title,
     details,
@@ -450,7 +650,7 @@ const Courses = () => {
 
     return (
         <>
-            <div className="mx-20 mr-5   mt-5 bg-white ">
+            <div className="p-8 space-y-8 bg-white">
                 {ShowItem()}
             </div>
         </>
